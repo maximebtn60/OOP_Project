@@ -7,11 +7,11 @@ namespace OOP_Project
 {
     class FacilityMember : User, IPersonalInformations
     {
-        public string name { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public string lastname { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public string mail { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public string phone { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public string birthDate { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public string name { get ; set ; }
+        public string lastname { get ; set ; }
+        public string mail { get ; set ; }
+        public string phone { get ; set ; }
+        public string birthDate { get ; set ; }
 
         public Subject SubjectTaugth { get; set; }
         public Student[] Class { get; set; }
@@ -55,12 +55,7 @@ namespace OOP_Project
                     lastname = columns[1];
                     mail = columns[2];
                     phone = columns[3];
-                    string subjects = columns[4];
-                    if (subjects == "french") SubjectTaugth = Subject.french;
-                    else if (subjects == "history") SubjectTaugth = Subject.history;
-                    else if (subjects == "english") SubjectTaugth = Subject.english;
-                    else if (subjects == "maths") SubjectTaugth = Subject.maths;
-                    else if (subjects == "litterature") SubjectTaugth = Subject.litterature;
+                    SubjectTaugth = (Subject)Convert.ToInt32(columns[4]);
                     //classe = columns[5]; // problem with the data base. Impossibility to stock data in a data base with a string []
 
                 }
