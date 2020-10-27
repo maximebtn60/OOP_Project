@@ -14,14 +14,14 @@ namespace OOP_Project
         public int GradeLevel { get; set; }
         public List<string> Courses { get; set; } // A voir si on ne fait pas plutôt un tableau au lieu d'une liste 
         public bool Tutor { get; set; }
-        public int Absence { get; set; }
-        public string name { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public string forename { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public string mail { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public string phone { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public string birthDate { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public int Absences { get; set; }
+        public string name { get ; set ; }
+        public string lastname { get; set ; }
+        public string mail { get; set; }
+        public string phone { get ; set ; }
+        public string birthDate { get; set; }
 
-        public Student() : base()
+        public Student()
         {
 
         }
@@ -35,7 +35,7 @@ namespace OOP_Project
         { Console.WriteLine($"The student still have to pay {UnpaidFees}"); }
 
         public void DisplayAbsence()
-        { Console.WriteLine($"The student did not attend {Absence} classes"); }
+        { Console.WriteLine($"The student did not attend {Absences} classes"); }
 
         public void DisplayGrades()
         {
@@ -95,11 +95,11 @@ namespace OOP_Project
                 if (login == columns[5])
                 {
                     name = columns[0];
-                    forename = columns[1];
-                    studentID = columns[2];
-                    birthDate = columns[3];
-                    absences = Convert.ToInt32(columns[4]);
-                    mail = columns[5];
+                    lastname = columns[1];
+                    mail = columns[2];
+                    StudentID = columns[3];
+                    birthDate = columns[4];
+                    Absences = Convert.ToInt32(columns[5]);
                     // to continue
                 }
             }

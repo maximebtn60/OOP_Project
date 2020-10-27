@@ -5,7 +5,7 @@ using System.IO;
 
 namespace OOP_Project
 {
-    class Registration : IPersonalInformations
+    public class Registration : IPersonalInformations
     {
         // assume each subject cost 300 euros per year (to confirm) 
         // assume you can choose between 1 and 5 subjects
@@ -27,7 +27,7 @@ namespace OOP_Project
 
         //personal info
         public string name { get; set; }
-        public string forename { get; set; }
+        public string lastname { get; set; }
         public string mail { get; set; } //also used as login
         public string phone { get; set; }
         public string birthDate { get; set; }
@@ -56,7 +56,7 @@ namespace OOP_Project
         }
 
         //Add data to the student file in the data base
-        public void WriteData(string path, string data) //path: choose the file you want to complete, data: add the data you want to add
+        public static void WriteData(string path, string data) //path: choose the file you want to complete, data: add the data you want to add
         {
             //get all the datas already present on the file student
             StreamReader reader = new StreamReader(path);
@@ -177,7 +177,7 @@ namespace OOP_Project
             name = Console.ReadLine();
 
             Console.WriteLine("ForeName ?");
-            forename = Console.ReadLine();
+            lastname = Console.ReadLine();
 
             Console.WriteLine("Phone number ? Please insert the indicatif of the country ");
             phone = Console.ReadLine();
@@ -203,7 +203,7 @@ namespace OOP_Project
         public void StudentID()
         {
             Random r = new Random();
-            studentID = studentID + forename[0] + forename[1] + name[0] + name[1] + Convert.ToString(r.Next(10000, 99999));
+            studentID = studentID + lastname[0] + lastname[1] + name[0] + name[1] + Convert.ToString(r.Next(10000, 99999));
         }
 
         public void PayFees()
@@ -234,7 +234,7 @@ namespace OOP_Project
 
         public void ToStringDataStudent() // to complete
         {
-            studentData = name + ";" + forename + ";" + studentID + ";" + birthDate + ";" + absences + ";" + mail + ";" + phone + ";" + tutor + ";" + level + ";" + classe + ";" + UnpaidFees;
+            studentData = name + ";" + lastname + ";" + studentID + ";" + birthDate + ";" + absences + ";" + mail + ";" + phone + ";" + tutor + ";" + level + ";" + classe + ";" + UnpaidFees;
         }
 
         public void ToStringDataAccessibilityLevel()

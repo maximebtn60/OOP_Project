@@ -7,11 +7,11 @@ namespace OOP_Project
 {
     class Admin : User, IPersonalInformations
     {
-        public string name { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public string forename { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public string mail { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public string phone { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public string birthDate { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }//not implemented in admin class
+        public string name { get; set; }
+        public string lastname { get; set; }
+        public string mail { get; set; }
+        public string phone { get; set; }
+        public string birthDate { get; set; }//not implemented in admin class
 
         public override void ExtractData()
         {
@@ -25,7 +25,7 @@ namespace OOP_Project
                 if (login == columns[2])
                 {
                     name = columns[0];
-                    forename = columns[1];
+                    lastname = columns[1];
                     mail = columns[2];
                     phone = columns[3];
                 }
@@ -54,4 +54,94 @@ namespace OOP_Project
             return access;
         }
 
+        public void AddAdmin()
+        {
+            Console.WriteLine("Name ?");
+            string name2 = Console.ReadLine();
+            Console.WriteLine("Forename ?");
+            string forename2 = Console.ReadLine();
+            Console.WriteLine("email ?");
+            string email2 = Console.ReadLine();
+            Console.WriteLine("phone ?");
+            string phone2 = Console.ReadLine();
+            Console.WriteLine("Password ?");
+            string password2 = Console.ReadLine();
+
+            string sumData = name2 + ";" + forename2 + ";" + email2 + ";" + phone2;
+            string sumAccessData = email2 + ";" + password2 + ";" + "admin";
+
+            Registration.WriteData(pathAdmin, sumData);//add the admin data in the admin file
+            Registration.WriteData(pathAccessibilityLevel, sumAccessData);//add the admin in the accessibility file
+        }
+        public void Delete(string login2)//delete admin, student or facility Member
+        {
+            string accessLevel = null;
+            string path = null;
+
+            //modification of the accessibilityLevel data
+            StreamReader reader2 = new StreamReader(pathAccessibilityLevel);
+            List<string> tab2 = new List<string>();
+            string temp2 = " ";
+            while (temp2 != null)
+            {
+                temp2 = reader2.ReadLine();
+                if (temp2 == null) break;
+                string[] comparison2 = temp2.Split(';');
+                if (comparison2[0] == login2) { accessLevel = comparison2[2]; }//if equal to login don't add it to the list but give us where the personal data is stored
+                else tab2.Add(temp2);
+
+            }
+            reader2.Close();
+
+
+            if (accessLevel == "admin") path = pathAdmin;
+            else if (accessLevel == "facilityMember") path = pathFacilityMember;
+            else path = pathStudent;
+
+            //modification of the personal data
+            StreamReader reader = new StreamReader(path);
+            List<string> tab = new List<string>();
+            string temp = " ";
+            while (temp != null)
+            {
+                temp = reader.ReadLine();
+                if (temp == null) break;
+                string[] comparison = temp.Split(';');
+                if (comparison[2] == login2) { }
+                else tab.Add(temp);
+
+
+            }
+            reader.Close();
+
+
+            //rewrite of the files with the new modified information
+            File.Delete(path);
+            File.Delete(pathAccessibilityLevel);
+            FileStream stream = new FileStream(path, FileMode.OpenOrCreate);
+            using (StreamWriter writer = new StreamWriter(stream))
+            {
+                //keep all the data already present
+                for (int i = 0; i < tab.Count; i++)
+                {
+                    writer.WriteLine(tab[i]);
+                    Console.WriteLine("passe1");
+                }
+            }
+            stream.Dispose();
+
+            FileStream stream2 = new FileStream(pathAccessibilityLevel, FileMode.OpenOrCreate);
+            using (StreamWriter writer2 = new StreamWriter(stream2))
+            {
+                //keep all the data already present
+                for (int i = 0; i < tab2.Count; i++)
+                {
+                    writer2.WriteLine(tab2[i]);
+                    Console.WriteLine("passe2");
+                }
+            }
+            stream2.Dispose();
+        }
+
     }
+}
