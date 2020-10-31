@@ -8,7 +8,22 @@ namespace OOP_Project
     {
         public double Mark { get; set; }
         public double Coef { get; set; }
-        public Subject Sub { get; set; }
+        public int Sub { get; set; }
         public string Date { get; set; }
+        public Exam(double Mark, double Coef, int Sub, string Date)
+        {
+            this.Mark = Mark;
+            this.Coef = Coef;
+            this.Sub = Sub;
+            this.Date = Date;
+        }
+
+        public Exam() { }
+
+        public override string ToString()
+        {
+            string exam = ($"{Mark},{Coef},{Date}");
+            return exam;
+        }
     }
 }

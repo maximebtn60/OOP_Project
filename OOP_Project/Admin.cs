@@ -73,6 +73,9 @@ namespace OOP_Project
             Registration.WriteData(pathAdmin, sumData);//add the admin data in the admin file
             Registration.WriteData(pathAccessibilityLevel, sumAccessData);//add the admin in the accessibility file
         }
+
+        // ajouter élève, ajouter prof, modifier les infos des élèves...   
+
         public void Delete(string login2)//delete admin, student or facility Member
         {
             string accessLevel = null;

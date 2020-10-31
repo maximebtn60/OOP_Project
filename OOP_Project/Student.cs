@@ -8,11 +8,10 @@ namespace OOP_Project
     public class Student : User, IPersonalInformations
     {
         public double UnpaidFees { get; set; }
+        public int NbSubject { get; set; }
         public string StudentID { get; set; }
-        public List<Exam> Grades { get; set; } // classe/enum Exam à créer (note, coefficient, matière)
         public int Workgroup { get; set; }
         public int GradeLevel { get; set; }
-        public List<string> Courses { get; set; } // A voir si on ne fait pas plutôt un tableau au lieu d'une liste 
         public bool Tutor { get; set; }
         public int Absences { get; set; }
         public string name { get ; set ; }
@@ -20,12 +19,99 @@ namespace OOP_Project
         public string mail { get; set; }
         public string phone { get ; set ; }
         public string birthDate { get; set; }
+        public string Data { get; set; }
+
+        List<Subject> courses = new List<Subject>();
+        public List<Subject> Courses// A voir si on ne fait pas plutôt un tableau au lieu d'une liste 
+        {
+            get
+            {
+                return this.Courses = courses;
+            }
+            set
+            {
+                value = courses;
+            }
+        }
+
+        List<Exam> grades = new List<Exam>();
+        public List<Exam> Grades
+        {
+            get
+            {
+                return this.Grades = grades;
+            }
+            set
+            {
+                value = grades;
+            }
+        }
 
         public Student()
         {
-
+            ExtractData();
         }
+        public override void ExtractData() 
+        {
+            StreamReader reader = new StreamReader(pathStudent);
+            string temp = " ";
+            while (temp != null)
+            {
+                temp = reader.ReadLine();
+                if (temp == null) break;
+                string[] rstudent = temp.Split(';');
+                if (login == rstudent[2])
+                {
+                    
+                    name = rstudent[0];
+                    lastname = rstudent[1];
+                    mail = rstudent[2];
+                    StudentID = rstudent[3];
+                    birthDate = rstudent[4];
+                    Absences = Convert.ToInt32(rstudent[5]);
+                    phone = rstudent[6];
+                    if (rstudent[7] == "0") Tutor = false;
+                    else Tutor = true;
+                    GradeLevel = Convert.ToInt32(rstudent[8]);
+                    Workgroup = Convert.ToInt32(rstudent[9]);
+                    UnpaidFees = Convert.ToDouble(rstudent[10]);
+                    NbSubject = Convert.ToInt32(rstudent[11]);
 
+                    for (int j = 12; j < 12 + NbSubject; j++)
+                    {
+
+                        string[] splitTab = rstudent[j].Split(',');
+                        if (splitTab.Length > 1)
+                        {
+                            Courses.Add((Subject)Convert.ToInt32(splitTab[0]));
+                            int k = 0;
+                            Exam exam = new Exam();
+                            exam.Sub = Convert.ToInt32(splitTab[k]);
+                            exam.Mark = Convert.ToDouble(splitTab[k + 1]);
+                            exam.Coef = Convert.ToDouble(splitTab[k + 2]);
+                            exam.Date = splitTab[k + 3];
+                            Grades.Add(exam);
+
+                        }
+                        else
+                        {
+                            Subject adding = new Subject();
+                            adding = (Subject)Convert.ToInt32(splitTab[0]);
+                            Console.WriteLine(adding);
+                            Courses.Add(adding);
+
+                        }
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("Incorrect login or the student doesn't exist");
+                    break;
+                }
+                
+            }
+            reader.Close();// closing of the streamreader
+        }
         public void DisplayPersonalInfo()
         {
 
@@ -81,32 +167,6 @@ namespace OOP_Project
             reader.Close();// closing of the streamreader
             return access;
         }
-
-        // extract student data from the database (student file) 
-        public override void ExtractData() // à terminer lorsque le fichier student aura été créé
-        {
-            StreamReader reader = new StreamReader(pathStudent);
-            string temp = " ";
-            while (temp != null)
-            {
-                temp = reader.ReadLine();
-                if (temp == null) break;
-                string[] columns = temp.Split(';');
-                if (login == columns[5])
-                {
-                    name = columns[0];
-                    lastname = columns[1];
-                    mail = columns[2];
-                    StudentID = columns[3];
-                    birthDate = columns[4];
-                    Absences = Convert.ToInt32(columns[5]);
-                    // to continue
-                }
-            }
-            reader.Close();// closing of the streamreader
-        }
-
-
 
     }
 }

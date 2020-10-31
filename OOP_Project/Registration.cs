@@ -7,6 +7,7 @@ namespace OOP_Project
 {
     public class Registration : IPersonalInformations
     {
+
         // assume each subject cost 300 euros per year (to confirm) 
         // assume you can choose between 1 and 5 subjects
 
@@ -39,6 +40,7 @@ namespace OOP_Project
         // storage of data before writing in a file
         string studentData = null;
         string accessibilityData = null;
+        string courseStorage = null;
 
         public Registration() // constructor
         {
@@ -48,7 +50,9 @@ namespace OOP_Project
             ChooseCourses();
             Fees();
             StudentID();
+            PayFees();
             ToStringDataAccessibilityLevel();
+            ToStringCourses();
             ToStringDataStudent();
             WriteData(pathAccessibilityLevel, accessibilityData);
             WriteData(pathStudent, studentData);
@@ -67,7 +71,6 @@ namespace OOP_Project
                 temp = reader.ReadLine();
                 if (temp == null) break;
                 tab.Add(temp);
-
             }
             reader.Close();
 
@@ -80,11 +83,8 @@ namespace OOP_Project
                 {
                     writer.WriteLine(tab[i]);
                 }
-
                 writer.WriteLine(data);
             }
-
-
         }
 
         public void ChooseCourses()
@@ -92,70 +92,64 @@ namespace OOP_Project
 
             Console.WriteLine("How many courses do you want to take ? number between 1 and 5");
             int number = Convert.ToInt32(Console.ReadLine());
-            Subject check = Subject.french;
+            Subject check = new Subject();
             int i = 0;
+
+            string coursesAvailable = null;
+            string[] test = Enum.GetNames(typeof(Subject));
+            for (int index = 0; index < test.Length; index++)
+            {
+                coursesAvailable = (coursesAvailable + " " + test[index]);
+            }
+
             while (i < number) // choice of the courses
             {
-                Console.WriteLine("what course de you want? french, litterature, history, maths, english ?");
+                Console.WriteLine($"what course de you want? {coursesAvailable} ");
                 string temp = Console.ReadLine();
-                switch (temp)
+                int blockage = 1;
+                for (int index2 = 0; index2 < test.Length; index2++)
                 {
-                    case "french":
-                        {
-                            check = Subject.french;
-                            break;
-                        }
-
-                    case "english":
-                        {
-                            check = Subject.english;
-                            break;
-                        }
-
-                    case "history":
-                        {
-                            check = Subject.history;
-                            break;
-                        }
-                    case "maths":
-                        {
-                            check = Subject.maths;
-                            break;
-                        }
-                    case "litterature":
-                        {
-                            check = Subject.litterature;
-                            break;
-                        }
-
+                    if (temp == test[index2])
+                    {
+                        check = (Subject)index2;
+                        blockage = 0;
+                    }
                 }
-                // check that you didn't choose twice the same course
 
-                int blockage = 0;
+                // check that you didn't choose twice the same course
                 if (i != 0)
                 {
                     for (int j = 0; j < courses.Count; j++)
                     {
-                        if (courses[j] == check)
-                        {
-                            blockage++;
-                        }
+                        if (courses[j] == check) blockage++;
                     }
-                    if (blockage == 0)
-                    {
-                        courses.Add(check);
-                    }
+                    if (blockage == 0) courses.Add(check);
+                    else Console.WriteLine("Error! incorrect spelling or subject already chosen");
                 }
                 else
                 {
-                    courses.Add(check);
+                    if (blockage == 0) courses.Add(check);
+                    else Console.WriteLine("Error! incorrect spelling or subject already chosen");
                 }
-                if (blockage == 0)
-                {
-                    i++;
-                }
-
+                if (blockage == 0) i++;
             }
+
+        }
+
+        public void ToStringCourses()
+        {
+            string[] test = Enum.GetNames(typeof(Subject));
+            for (int i = 0; i < courses.Count; i++)
+            {
+                for (int k = 0; k < test.Length; k++)
+                {
+                    if (courses[i] == (Subject)k)
+                    {
+                        courseStorage = courseStorage + ";" + Convert.ToString(k);
+                    }
+                }
+            }
+
         }
 
         public void ChooseLoginAndPassword()
@@ -176,17 +170,17 @@ namespace OOP_Project
             Console.WriteLine("Name ?");
             name = Console.ReadLine();
 
-            Console.WriteLine("ForeName ?");
+            Console.WriteLine("Last Name ?");
             lastname = Console.ReadLine();
 
-            Console.WriteLine("Phone number ? Please insert the indicatif of the country ");
+            Console.WriteLine("Phone number ?");
             phone = Console.ReadLine();
-
 
             Console.WriteLine("birth date ? xx/ww/zzzz");
             birthDate = Console.ReadLine();
             while (birthDate.Length != 10)
             {
+                Console.WriteLine("format incorrect, please enter birth date again");
                 birthDate = Console.ReadLine();
             }
 
@@ -197,7 +191,7 @@ namespace OOP_Project
             Console.WriteLine("In which level do you want to be ?");
             level = Convert.ToInt32(Console.ReadLine());
             Random r = new Random();
-            classe = r.Next(1, 2);
+            classe = r.Next(1, 3);
         }
 
         public void StudentID()
@@ -232,16 +226,14 @@ namespace OOP_Project
             }
         }
 
-        public void ToStringDataStudent() // to complete
+        public void ToStringDataStudent()
         {
-            studentData = name + ";" + lastname + ";" + studentID + ";" + birthDate + ";" + absences + ";" + mail + ";" + phone + ";" + tutor + ";" + level + ";" + classe + ";" + UnpaidFees;
+            studentData = ($"{name};{lastname};{mail};{studentID};{birthDate};{absences};{phone};{tutor};{level};{classe};{UnpaidFees};{courseStorage.Length / 2}{courseStorage}");
         }
 
         public void ToStringDataAccessibilityLevel()
         {
             accessibilityData = mail + ";" + password + ";" + "student";
         }
-
-
     }
 }
