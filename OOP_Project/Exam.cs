@@ -17,6 +17,7 @@ namespace OOP_Project
             this.Sub = Sub;
             this.Date = Date;
         }
+        public Exam() { }
 
         public override string ToString()
         {

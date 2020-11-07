@@ -14,6 +14,8 @@ namespace OOP_Project
         public string birthDate { get ; set ; }
         public int numLevel { get; set; }
 
+        public List<string>[] disponibility { get; set; }
+
         public Subject SubjectTaugth { get; set; }
         public List<Student> Class { get; set; }
         public int NumClass { get; set; }
@@ -400,6 +402,120 @@ namespace OOP_Project
 
             }
 
+        }
+        public void ReadDispo()
+        {
+            string disponibilities = "";
+            StreamReader dispoReader = new StreamReader(PathDispo);
+            string line = "";
+            while (line != null)
+            {
+                line = dispoReader.ReadLine();
+                if (line == null) break;
+                if (line.Split(';')[0] == name & line.Split(';')[1] == lastname)
+                {
+                    disponibilities = line;
+                    break;
+                }
+            }
+            for (int i = 0; i < disponibilities.Split(';').Length; i++)         //transtiping to List<string>[]
+            {
+                List<string> tempList = new List<string>();
+                foreach (string st in disponibilities.Split(';')[i].Split(',')) tempList.Add(st);
+                tempList.RemoveAll(item => item == "");         //removes the empty strings that appears if there is a day witout disponibilities
+                disponibility[i] = tempList;
+            }
+        }
+        public void AddDispo()
+        {
+            string test = "yes";
+            while (test == "yes")
+            {
+                string dtest = "yes";
+                Console.WriteLine("Which day are you disponible ?");
+                Console.WriteLine("Monday : type 1");
+                Console.WriteLine("Tuesday : type 2");
+                Console.WriteLine("Wednesday : type 3");
+                Console.WriteLine("Thursday : type 4");
+                Console.WriteLine("Friday : type 5");
+                int day = Convert.ToInt32(Console.ReadLine());
+                while (dtest == "yes")
+                {
+                    Console.Write("Enter a time slot (ex 09:30-11:00) : ");
+                    string slot = Console.ReadLine();
+                    if (disponibility[day + 1].Count == 0) disponibility[day + 1].Add(slot);
+                    else
+                    {
+                        for (int compt = 0; compt < disponibility[day + 1].Count; compt++)
+                        {
+                            if (slot.CompareTo(disponibility[day + 1][compt]) == 0)              //case if the time slot is already entered
+                            {
+                                Console.WriteLine("the time slot is already filled");
+                                break;
+                            }
+                            if ((slot.CompareTo(disponibility[day + 1][compt]) < 0) | (slot.CompareTo(disponibility[day + 1][compt]) > 0 & compt == disponibility[day + 1].Count))               //case if the time entered is before another
+                            {
+                                disponibility[day + 1].Insert(compt, slot);
+                                break;
+                            }
+                        }
+                    }
+                    Console.WriteLine("Do you want to add another disponibility this day ?");    //while loop exit
+                    Console.Write("type yes or no : ");
+                    dtest = Console.ReadLine();
+                }
+                Console.WriteLine("Do you want to add disponibilities on another day ?");       //while loop exit
+                Console.Write("type yes or no : ");
+                test = Console.ReadLine();
+            }
+        }
+        public void RemoveDispo()
+        {
+            string test = "yes";
+            while (test == "yes")
+            {
+                string dtest = "yes";
+                Console.WriteLine("Which day are you no longer disponible ?");
+                Console.WriteLine("Monday : type 1");
+                Console.WriteLine("Tuesday : type 2");
+                Console.WriteLine("Wednesday : type 3");
+                Console.WriteLine("Thursday : type 4");
+                Console.WriteLine("Friday : type 5");
+                int day = Convert.ToInt32(Console.ReadLine());
+                while (dtest == "yes")
+                {
+                    Console.Write("Enter the time slot you wish to remove (ex 09:30-11:00) : ");
+                    string slot = Console.ReadLine();
+                    if (disponibility[day + 1].Contains(slot)) disponibility[day + 1].Remove(slot); //remove an instance of the slot entered if it exists
+                    else Console.WriteLine("No matching time slot found this day.");
+                    Console.WriteLine("Do you want to remove another disponibility this day ?");    //while loop exit
+                    Console.Write("type yes or no : ");
+                    dtest = Console.ReadLine();
+                }
+                Console.WriteLine("Do you want to remove disponibilities on another day ?");       //while loop exit
+                Console.Write("type yes or no : ");
+                test = Console.ReadLine();
+            }
+        }
+        public void DisplayDispo()
+        {
+            string days = "Monday          Tuesday         Wednesday       Thursday        Friday";
+            string space1 = "           ";
+            string space2 = "     ";
+            string line = "";
+            Console.Write(disponibility[0][0]);
+            Console.WriteLine(disponibility[1][0]);
+            Console.WriteLine(days);
+            for (int i = 0; i < 8; i++)
+            {
+                line = "";
+                for (int j = 2; j < 7; j++)
+                {
+                    if (disponibility[j].Count >= i + 1) line += disponibility[j][i] + space2;
+                    else line += space1 + space2;
+                }
+                Console.WriteLine(line);
+            }
         }
     }
 }
