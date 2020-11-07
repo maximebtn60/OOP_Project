@@ -18,8 +18,6 @@ namespace OOP_Project
             this.Date = Date;
         }
 
-        public Exam() { }
-
         public override string ToString()
         {
             string exam = ($"{Mark},{Coef},{Date}");

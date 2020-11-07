@@ -138,7 +138,7 @@ namespace OOP_Project
                 Console.WriteLine(student.ToString());
             }
         }
-        private void DisplayAttendandePerStudent(Student student)
+        private void DisplayAttendancePerStudent(Student student)
         {
             Console.WriteLine($"The student {student.lastname} {student.name} has been absent {student.Absences} times");
         }
