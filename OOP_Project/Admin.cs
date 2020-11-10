@@ -74,8 +74,118 @@ namespace OOP_Project
             Registration.WriteData(pathAccessibilityLevel, sumAccessData);//add the admin in the accessibility file
         }
 
-        // ajouter élève, ajouter prof, modifier les infos des élèves...   
+        public void AddFacilityMember()
+        {
+            Console.WriteLine("First Name ?");
+            string name2 = Console.ReadLine();
+            Console.WriteLine("Last name ?");
+            string forename2 = Console.ReadLine();
+            Console.WriteLine("email ?");
+            string email2 = Console.ReadLine();
+            Console.WriteLine("phone ?");
+            string phone2 = Console.ReadLine();
+            Console.WriteLine("Password ?");
+            string password2 = Console.ReadLine();
 
+            string[] test = Enum.GetNames(typeof(Subject));
+            string coursesAvailable = null;
+            for (int index = 0; index < test.Length; index++)
+            {
+                coursesAvailable = (coursesAvailable + " " + test[index]);
+            }
+            Console.WriteLine($"Number of subject(s) taught ? {coursesAvailable}");
+            int number = Convert.ToInt32(Console.ReadLine());
+            while (number < 1 || number > test.Length)
+            {
+                Console.WriteLine($"Please choose a number between 1 and {test.Length}");
+                number = Convert.ToInt32(Console.ReadLine());
+            }
+            int i = 0;
+            Subject check = new Subject();
+            List<Subject> courses = new List<Subject>();
+            while (i < number) // choice of the courses
+            {
+                Console.WriteLine($"what course de you want to teach? {coursesAvailable} ");
+                string temp = Console.ReadLine();
+                int blockage = 1;
+                for (int index2 = 0; index2 < test.Length; index2++)
+                {
+                    if (temp == test[index2])
+                    {
+                        check = (Subject)index2;
+                        blockage = 0;
+                    }
+                }
+
+                // check that you didn't choose twice the same course
+                if (i != 0)
+                {
+                    for (int j = 0; j < courses.Count; j++)
+                    {
+                        if (courses[j] == check) blockage++;
+                    }
+                    if (blockage == 0) courses.Add(check);
+                    else Console.WriteLine("Error! incorrect spelling or subject already chosen");
+                }
+                else
+                {
+                    if (blockage == 0) courses.Add(check);
+                    else Console.WriteLine("Error! incorrect spelling or subject already chosen");
+                }
+                if (blockage == 0) i++;
+            }
+
+            int passe = 0;
+            string coursesChosen = null;
+            for (int k = 0; k < courses.Count; k++)
+            {
+                for (int j = 0; j < test.Length; j++)
+                {
+
+                    if (courses[k] == (Subject)j)
+                    {
+                        passe++;
+                        if (passe == number) coursesChosen = coursesChosen + j;
+                        else coursesChosen = coursesChosen + j + ",";
+                        Console.WriteLine(passe);
+                    }
+                }
+            }
+
+
+            string levelAndClass = null;
+            string confirmation = "Y";
+            while (confirmation == "Y")
+            {
+                Console.WriteLine("Choose the level you want to give to a facility member");
+                int level = Convert.ToInt32(Console.ReadLine());
+                Console.WriteLine("Choose the number of classes you want to give to facility member");
+                int number2 = Convert.ToInt32(Console.ReadLine());
+                int j = 0;
+                levelAndClass = levelAndClass + level;
+                while (j < number2)
+                {
+                    Console.WriteLine("Choose the numero of the class");
+                    int numero = Convert.ToInt32(Console.ReadLine());
+                    levelAndClass = levelAndClass + "," + numero;
+                    j++;
+                }
+                Console.WriteLine("Do you want to enter other ? If yes, enter Y, if no, enter N");
+                confirmation = Console.ReadLine();
+                if (confirmation == "Y") levelAndClass = levelAndClass + ";";
+            }
+            string sumData = name2 + ";" + forename2 + ";" + email2 + ";" + phone2 + ";" + coursesChosen + ";" + levelAndClass;
+            string sumAccessData = email2 + ";" + password2 + ";" + "facilityMember";
+
+            Registration.WriteData(pathFacilityMember, sumData);//add the admin data in the admin file
+            Registration.WriteData(pathAccessibilityLevel, sumAccessData);//add the admin in the accessibility file
+        }
+
+        public void AddStudent()
+        {
+            bool admin = true;
+            Registration student = new Registration(admin);
+        }
         public void Delete(string login2)//delete admin, student or facility Member
         {
             string accessLevel = null;

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using System.IO;
+using System.Linq;
 
 namespace OOP_Project
 {
@@ -15,9 +16,32 @@ namespace OOP_Project
         public int numLevel { get; set; }
 
         public List<string>[] disponibility { get; set; }
-
-        public Subject SubjectTaugth { get; set; }
+        List<Subject> subjectTaught = new List<Subject>();
+        public List<Subject> SubjectTaught
+        {
+            get
+            {
+                return this.SubjectTaught = subjectTaught;
+            }
+            set
+            {
+                value = subjectTaught;
+            }
+        }
+        List<LevelAndClasses> levelandclasses = new List<LevelAndClasses>();
+        public List<LevelAndClasses> Levelandclasses
+        {
+            get
+            {
+                return this.Levelandclasses = levelandclasses;
+            }
+            set
+            {
+                value = levelandclasses;
+            }
+        }
         public List<Student> Class { get; set; }
+
         public int NumClass { get; set; }
 
         // return true if the login and password are the good ones and also if the category(facilityMember) is true
@@ -58,18 +82,66 @@ namespace OOP_Project
                     lastname = columns[1];
                     mail = columns[2];
                     phone = columns[3];
-                    SubjectTaugth = (Subject)Convert.ToInt32(columns[4]);
-                    //classe = columns[5]; // problem with the data base. Impossibility to stock data in a data base with a string []
-
                 }
             }
             reader.Close();// closing of the streamreader
         }
-        public FacilityMember(Subject subjectTaugth, int numClass, int numLevel)
+        public FacilityMember(string login) : base()
         {
-            this.SubjectTaugth = subjectTaugth;
-            this.NumClass = numClass;
-            this.numLevel = numLevel;
+            PathDispo = "Disponibilities.txt";
+            disponibility = new List<string>[7];
+            StreamReader readTeacher = new StreamReader(pathFacilityMember);
+            string temp2 = "";
+            while (temp2 != null)
+            {
+                temp2 = readTeacher.ReadLine();
+                if (temp2 == null) break;
+                string[] rTeacher = temp2.Split(';');
+                if (rTeacher[2] == login)
+                {
+                    this.name = rTeacher[0];
+                    this.lastname = rTeacher[1];
+                    this.login = rTeacher[2];
+                    this.phone = rTeacher[3];
+                    string[] rTeacher2 = rTeacher[4].Split(',');
+                    // subjects taught
+                    for (int i = 0; i < rTeacher2.Length; i++)
+                    {
+                        SubjectTaught.Add((Subject)Convert.ToInt32(rTeacher2[i]));
+                    }
+
+                    // level and classes
+                    for (int j = 5; j < rTeacher.Length; j++)
+                    {
+                        LevelAndClasses level = new LevelAndClasses();
+                        string[] splitTab = rTeacher[j].Split(',');
+                        level.Level = (Convert.ToInt32(splitTab[0]));
+                        for (int k = 1; k < splitTab.Length; k++)
+                        {
+                            level.Classes.Add(Convert.ToInt32(splitTab[k]));
+                        }
+                        Levelandclasses.Add(level);
+                    }
+                    break;
+                }
+
+            }
+            readTeacher.Close();
+
+            Console.WriteLine("Level and class available:");
+            for (int i = 0; i < levelandclasses.Count; i++)
+            {
+                for (int j = 0; j < levelandclasses[i].Classes.Count; j++)
+                {
+                    Console.WriteLine($"Level: {levelandclasses[i].Level}, Class: {levelandclasses[i].Classes[j]}");
+                }
+            }
+            Console.WriteLine("choose the level and class");
+            Console.WriteLine("Level ?");
+            int level2 = Convert.ToInt32(Console.ReadLine());
+            Console.WriteLine("Class ?");
+            int class2 = Convert.ToInt32(Console.ReadLine());
+
             StreamReader readStudent = new StreamReader(pathStudent);
             string temp = "";
             while (temp != null)
@@ -77,7 +149,7 @@ namespace OOP_Project
                 temp = readStudent.ReadLine();
                 if (temp == null) break;
                 string[] rstudent = temp.Split(';');
-                if (Convert.ToInt32(rstudent[9]) == NumClass && Convert.ToInt32(rstudent[8]) == numLevel)
+                if (Convert.ToInt32(rstudent[9]) == level2 && Convert.ToInt32(rstudent[8]) == class2)
                 {
                     Student student = new Student();
                     student.name = rstudent[0];
@@ -114,7 +186,6 @@ namespace OOP_Project
                         {
                             Subject adding = new Subject();
                             adding = (Subject)Convert.ToInt32(splitTab[0]);
-                            Console.WriteLine(adding);
                             student.Courses.Add(adding);
 
                         }
@@ -403,7 +474,7 @@ namespace OOP_Project
             }
 
         }
-        public void ReadDispo()
+        public List<string>[] ReadDispo()
         {
             string disponibilities = "";
             StreamReader dispoReader = new StreamReader(PathDispo);
@@ -418,6 +489,7 @@ namespace OOP_Project
                     break;
                 }
             }
+            dispoReader.Close();
             for (int i = 0; i < disponibilities.Split(';').Length; i++)         //transtiping to List<string>[]
             {
                 List<string> tempList = new List<string>();
@@ -425,6 +497,7 @@ namespace OOP_Project
                 tempList.RemoveAll(item => item == "");         //removes the empty strings that appears if there is a day witout disponibilities
                 disponibility[i] = tempList;
             }
+            return disponibility;
         }
         public void AddDispo()
         {
@@ -517,5 +590,79 @@ namespace OOP_Project
                 Console.WriteLine(line);
             }
         }
+
+        public void WriteDispo()            //à déplacer dans Admin
+        {
+            string disponibilities = "";
+            disponibilities = disponibility[0][0];
+            for (int i = 0; i < 6; i++)         //transtype to string
+            {
+                disponibilities += ";";
+                if (disponibility[i + 1].Count != 0)
+                {
+                    disponibilities += disponibility[i + 1][0];
+                    foreach (string slots in disponibility[i + 1].Skip(1))
+                    {
+                        disponibilities += ",";
+                        disponibilities += slots;
+                    }
+                }
+            }
+            StreamReader streamReader = new StreamReader(PathDispo);
+            List<string> lines = new List<string>();
+            string line = "";
+            while (line != null)
+            {
+                line = streamReader.ReadLine();
+                if (line == null) break;
+                lines.Add(line);
+            }
+            streamReader.Close();
+            for (int i = 0; i < lines.Count; i++)
+            {
+                if (lines[i].Contains($"{name};{lastname}") == true) lines[i] = disponibilities;
+            }
+            File.Delete(PathDispo);
+            FileStream stream = new FileStream(PathDispo, FileMode.OpenOrCreate);
+            stream.Dispose();
+            StreamWriter streamWriter = new StreamWriter(PathDispo);
+            foreach (string l in lines)
+            {
+                streamWriter.WriteLine(l);
+            }
+            streamWriter.Close();
+        }
+        public void EditDispo()
+        {
+            disponibility = ReadDispo();
+
+            foreach (List<string> l in disponibility)
+            {
+                foreach (string s in l) Console.Write(s);
+            }
+
+            string test1 = "";
+            while (test1 != "3")
+            {
+                Console.WriteLine("What do you want to do ?");
+                Console.WriteLine("1 : Add a disponibility");
+                Console.WriteLine("2 : Remove a disponibility");
+                Console.WriteLine("3 : Nothing");
+                test1 = Console.ReadLine();
+                if (test1 == "3") break;
+                if (test1 == "1")
+                {
+                    DisplayDispo();
+                    AddDispo();
+                }
+                if (test1 == "2")
+                {
+                    DisplayDispo();
+                    RemoveDispo();
+                }
+            }
+            WriteDispo();
+        }
+
     }
 }

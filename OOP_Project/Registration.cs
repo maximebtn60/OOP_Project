@@ -76,6 +76,41 @@ namespace OOP_Project
             WriteData(pathStudent, studentData);
 
         }
+        public Registration(bool admin)
+        {
+            if (admin == true)
+            {
+                string confirmation = "N";
+                while (confirmation == "N")
+                {
+                    CompletePersonalInfos();
+                    Console.Clear();
+                    ChooseLoginAndPassword();
+                    Console.Clear();
+                    LevelofClass();
+                    Console.Clear();
+                    ChooseCourses();
+                    Console.Clear();
+                    Fees();
+                    StudentID();
+                    Console.Clear();
+                    Console.WriteLine($"firstname: {name}, lastname: {lastname}, born the {birthDate}. The mail is {mail} and the phone is {phone}." +
+                        $"The courses the person have chosen are {CoursesToString()}");
+                    Console.WriteLine("If you agree enter Y, otherwise entre N");
+                    confirmation = Console.ReadLine();
+                    while ((confirmation != "Y") && (confirmation != "N"))
+                    {
+                        Console.WriteLine("If you agree enter Y, otherwise entre N");
+                    }
+                    if (confirmation == "N") Console.Clear();
+                }
+                ToStringDataAccessibilityLevel();
+                ToStringCourses();
+                ToStringDataStudent();
+                WriteData(pathAccessibilityLevel, accessibilityData);
+                WriteData(pathStudent, studentData);
+            }
+        }
 
         public string CoursesToString()
         {
