@@ -22,8 +22,7 @@ namespace OOP_Project
             this.Classe = Classe;  // ADD A STUDENT
         }
 
-
-        public static void AddExamAssignment(string Subject, DateTime Date, String ExamAssignment) // Modify to be able to choose the Class of student 
+        public static void AddExamAssignment(string Subject, DateTime Date, String ExamAssignment, int Classe, int Niveau) // Modify to be able to choose the Class of student 
         {
 
             StreamReader reader = new StreamReader("C:/Users/HP/Downloads/AssignmentsExams.txt"); // declaration of the reader and the link of the file
@@ -37,9 +36,12 @@ namespace OOP_Project
 
                 if (temp == Subject)
                 {
-                    tab.Add(ExamAssignment + "at the following date : " + Date);
+                    tab.Add(ExamAssignment + ";" + Date + ";" + Classe + ";" + Niveau);
                 }
             }
+
+
+            // Ajouetr une fonction qui efface un Devoir/ Exam ?
 
             reader.Close();
 
@@ -53,11 +55,14 @@ namespace OOP_Project
                 {
                     writer.WriteLine(tab[i]);
 
+
+
                 }
 
             }
 
         }
+
 
 
         public override string ToString()
