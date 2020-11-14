@@ -14,6 +14,8 @@ namespace OOP_Project
         public string phone { get ; set ; }
         public string birthDate { get ; set ; }
         public int numLevel { get; set; }
+        public int level2 { get; set; }
+        public int class2 { get; set; }
 
         public List<string>[] disponibility { get; set; }
         List<Subject> subjectTaught = new List<Subject>();
@@ -43,52 +45,9 @@ namespace OOP_Project
         public List<Student> Class { get; set; }
 
         public int NumClass { get; set; }
-
-        // return true if the login and password are the good ones and also if the category(facilityMember) is true
-        public override bool Login() //complete 
-        {
-            bool access = false;
-            StreamReader reader = new StreamReader(pathAccessibilityLevel); // declaration of the reader and the link of the file
-            string temp = " ";
-            while (temp != null)
-            {
-                temp = reader.ReadLine();
-                if (temp == null) break;
-                string[] columns = temp.Split(';');
-                Console.WriteLine($"{columns[0]} {columns[1]} {columns[2]}");
-                if (columns[0] == login && columns[1] == password && columns[2] == "FacilityMember")// comparison between the datas of the file and the data given by the user 
-                {
-                    access = true;
-                }
-
-            }
-            reader.Close();// closing of the streamreader
-            return access;
-        }
-
-        // extract student data from the database (student file) 
-        public override void ExtractData() // à terminer lorsque le fichier student aura été créé
-        {
-            StreamReader reader = new StreamReader(pathFacilityMember);
-            string temp = " ";
-            while (temp != null)
-            {
-                temp = reader.ReadLine();
-                if (temp == null) break;
-                string[] columns = temp.Split(';');
-                if (login == columns[2])
-                {
-                    name = columns[0];
-                    lastname = columns[1];
-                    mail = columns[2];
-                    phone = columns[3];
-                }
-            }
-            reader.Close();// closing of the streamreader
-        }
         public FacilityMember(string login) : base()
         {
-            PathDispo = "Disponibilities.txt";
+
             disponibility = new List<string>[7];
             StreamReader readTeacher = new StreamReader(pathFacilityMember);
             string temp2 = "";
@@ -138,9 +97,9 @@ namespace OOP_Project
             }
             Console.WriteLine("choose the level and class");
             Console.WriteLine("Level ?");
-            int level2 = Convert.ToInt32(Console.ReadLine());
+            level2 = Convert.ToInt32(Console.ReadLine());
             Console.WriteLine("Class ?");
-            int class2 = Convert.ToInt32(Console.ReadLine());
+            class2 = Convert.ToInt32(Console.ReadLine());
 
             StreamReader readStudent = new StreamReader(pathStudent);
             string temp = "";
@@ -195,6 +154,50 @@ namespace OOP_Project
             }
             readStudent.Close();
         }
+
+        // return true if the login and password are the good ones and also if the category(facilityMember) is true
+        public override bool Login() //complete 
+        {
+            bool access = false;
+            StreamReader reader = new StreamReader(pathAccessibilityLevel); // declaration of the reader and the link of the file
+            string temp = " ";
+            while (temp != null)
+            {
+                temp = reader.ReadLine();
+                if (temp == null) break;
+                string[] columns = temp.Split(';');
+                Console.WriteLine($"{columns[0]} {columns[1]} {columns[2]}");
+                if (columns[0] == login && columns[1] == password && columns[2] == "FacilityMember")// comparison between the datas of the file and the data given by the user 
+                {
+                    access = true;
+                }
+
+            }
+            reader.Close();// closing of the streamreader
+            return access;
+        }
+
+        // extract student data from the database (student file) 
+        public override void ExtractData() // à terminer lorsque le fichier student aura été créé
+        {
+            StreamReader reader = new StreamReader(pathFacilityMember);
+            string temp = " ";
+            while (temp != null)
+            {
+                temp = reader.ReadLine();
+                if (temp == null) break;
+                string[] columns = temp.Split(';');
+                if (login == columns[2])
+                {
+                    name = columns[0];
+                    lastname = columns[1];
+                    mail = columns[2];
+                    phone = columns[3];
+                }
+            }
+            reader.Close();// closing of the streamreader
+        }
+
         private List<Student> DisplayTutorList()
         {
             List<Student> tutorList = new List<Student>();
@@ -591,6 +594,21 @@ namespace OOP_Project
             }
         }
 
+        public void DisplayExam()
+        {
+            for (int i = 0; i < Levelandclasses.Count; i++)
+            {
+                for (int j = 0; j < Levelandclasses[i].Classes.Count; j++)
+                {
+                    Console.Write("Level " + Levelandclasses[i].Level + " ");
+                    Console.WriteLine("Class " + Levelandclasses[i].Classes[j]);
+                    Calendar.ReadExamAssignment(Levelandclasses[i].Classes[j], Levelandclasses[i].Level);
+                    Console.WriteLine("passe");
+                    Console.WriteLine();
+
+                }
+            }
+        }
         public void WriteDispo()            //à déplacer dans Admin
         {
             string disponibilities = "";

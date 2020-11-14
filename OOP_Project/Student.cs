@@ -140,6 +140,10 @@ namespace OOP_Project
             { Console.Write($"{Courses[i]}, "); }
             Console.Write("\n");
         }
+        public void DisplayExam()
+        {
+            Calendar.ReadExamAssignment(Workgroup, GradeLevel);
+        }
 
         public void AddHimselfTutor()
         {
