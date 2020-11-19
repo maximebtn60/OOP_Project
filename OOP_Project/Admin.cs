@@ -2,16 +2,48 @@
 using System.Collections.Generic;
 using System.Text;
 using System.IO;
-
 namespace OOP_Project
 {
-    class Admin : User, IPersonalInformations
+    public class Admin : User, IPersonalInformations
     {
         public string name { get; set; }
         public string lastname { get; set; }
         public string mail { get; set; }
         public string phone { get; set; }
         public string birthDate { get; set; }//not implemented in admin class
+
+        public Admin()
+        {
+            Console.WriteLine("Login ?");
+            login = Console.ReadLine();
+            Console.WriteLine("Password ?");
+            password = Console.ReadLine();
+            while (Login() == false)
+            {
+                if (Login() == true) break;
+                Console.WriteLine("Login ?");
+                login = Console.ReadLine();
+                Console.WriteLine("Password ?");
+                password = Console.ReadLine();
+            }
+            StreamReader readAdmin = new StreamReader(pathAdmin);
+            string temp = "";
+            while (temp != null)
+            {
+                temp = readAdmin.ReadLine();
+                if (temp == null) break;
+                string[] rAdmin = temp.Split(';');
+                if (rAdmin[2] == login)
+                {
+                    name = rAdmin[0];
+                    lastname = rAdmin[1];
+                    mail = rAdmin[2];
+                    phone = rAdmin[3];
+
+                }
+            }
+            readAdmin.Close();
+        }
 
         public override void ExtractData()
         {
@@ -33,6 +65,7 @@ namespace OOP_Project
             reader.Close();// closing of the streamreader
 
         }
+
         public override bool Login()//return  true if the identificaton is positive, return false if the identification is negative
         {
             bool access = false;
@@ -43,8 +76,7 @@ namespace OOP_Project
                 temp = reader.ReadLine();// give us a way to read a file
                 if (temp == null) break;
                 string[] columns = temp.Split(';');
-                Console.WriteLine($"{columns[0]} {columns[1]} {columns[2]}");
-                if (columns[0] == login && columns[1] == password && columns[2] == "Admin")// comparison between the datas of the file and the data given by the user 
+                if (columns[0] == login && columns[1] == password && columns[2] == "admin")// comparison between the datas of the file and the data given by the user 
                 {
                     access = true;
                 }
@@ -52,6 +84,66 @@ namespace OOP_Project
             }
             reader.Close();// closing of the streamreader
             return access;
+        }
+
+        public void ExeFunctions()
+        {
+            string carryOn = "N";
+
+            while (carryOn == "N")
+            {
+                Console.Clear();
+                DisplayPersonalInfos();
+                Console.WriteLine("1. Add a new admin\n" +
+                    "2. Add a new facility member\n" +
+                    "3. Add a new student\n" +
+                    "4. Delete with login\n" +
+                    "5. Change fees of a student\n" +
+                    "6. Disconnect\n");
+
+                int switchCase = Convert.ToInt32(Console.ReadLine());
+                switch (switchCase)
+                {
+                    case 1:
+                        AddAdmin();
+                        break;
+                    case 2:
+                        AddFacilityMember();
+                        break;
+                    case 3:
+                        AddStudent();
+                        break;
+                    case 4:
+                        Console.WriteLine("login of the person you want to delete");
+                        string logTemp = Console.ReadLine();
+                        Delete(logTemp);
+                        break;
+                    case 5:
+                        PayFees();
+                        break;
+                    case 6:
+                        break;
+                    default:
+                        break;
+                }
+
+                Console.WriteLine("Do you want to disconnect? if yes, enter Y else enter N");
+                carryOn = Console.ReadLine();
+                while (carryOn != "Y" && carryOn != "N")
+                {
+                    Console.WriteLine("Do you want to disconnect? if yes, enter Y else enter N");
+                    carryOn = Console.ReadLine();
+                }
+                Console.Clear();
+            }
+        }
+
+        public void DisplayPersonalInfos()
+        {
+            Console.WriteLine($"First Name: {name}\n" +
+                $"Last Name: {lastname}\n" +
+                $"phone number: {phone}\n" +
+                $"email address: {mail}\n");
         }
 
         public void AddAdmin()
@@ -186,6 +278,7 @@ namespace OOP_Project
             bool admin = true;
             Registration student = new Registration(admin);
         }
+
         public void Delete(string login2)//delete admin, student or facility Member
         {
             string accessLevel = null;
@@ -254,6 +347,82 @@ namespace OOP_Project
                 }
             }
             stream2.Dispose();
+        }
+
+        public void TimeTable()
+        {
+            List<FacilityMember> teachers = new List<FacilityMember>();
+            StreamReader reader = new StreamReader(pathFacilityMember); // declaration of the reader and the link of the file
+            string temp = " ";
+            while (temp != null)
+            {
+                temp = reader.ReadLine();// give us a way to read a file
+                if (temp == null) break;
+                string[] split = temp.Split();
+                //FacilityMember teacher = new FacilityMember(split[2]);
+                //teachers.Add(teacher);
+            }
+            reader.Close();
+
+
+        }
+
+        public static void ModifyDataStudent(Student stud)
+        {
+            string pathStudent = ".//Student.txt";
+            StreamReader reader = new StreamReader(pathStudent);
+            List<string> tab = new List<string>();
+            string temp = " ";
+            while (temp != null)
+            {
+                temp = reader.ReadLine();
+                string save = temp;
+                if (temp == null) break;
+                string[] comparison = temp.Split(';');
+                if (comparison[2] == stud.mail)
+                {
+                    tab.Add(stud.Data);
+                }
+                else tab.Add(temp);
+
+
+            }
+            reader.Close();
+
+            File.Delete(pathStudent);
+            FileStream stream = new FileStream(pathStudent, FileMode.OpenOrCreate);
+            using (StreamWriter writer = new StreamWriter(stream))
+            {
+                //keep all the data already present
+                for (int i = 0; i < tab.Count; i++)
+                {
+                    writer.WriteLine(tab[i]);
+
+                }
+            }
+            stream.Dispose();
+
+        }
+
+        public void PayFees()
+        {
+            Console.WriteLine("PAY FEES");
+            Console.WriteLine("First Name of the student?");
+            string name = Console.ReadLine();
+            Console.WriteLine("Last name of the student");
+            string lastname2 = Console.ReadLine();
+            Student stud = new Student(name, lastname2);
+            Console.WriteLine($"The fees still unpaid are {stud.UnpaidFees}");
+            Console.WriteLine("How much do you want to deduce from the fees");
+            double number = Convert.ToDouble(Console.ReadLine());
+
+            while (stud.UnpaidFees - number < 0)
+            {
+                Console.WriteLine("The number you want to pay is too much, please insert an amount inferior to the fees");
+                number = Convert.ToDouble(Console.ReadLine());
+            }
+            stud.UnpaidFees = stud.UnpaidFees - number;
+            stud.ModifyDataStudent();
         }
 
     }

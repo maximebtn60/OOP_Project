@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
+using System.Linq;
 using System.IO;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace OOP_Project
 {
@@ -76,6 +78,7 @@ namespace OOP_Project
             WriteData(pathStudent, studentData);
 
         }
+
         public Registration(bool admin)
         {
             if (admin == true)
@@ -111,6 +114,7 @@ namespace OOP_Project
                 WriteData(pathStudent, studentData);
             }
         }
+
 
         public string CoursesToString()
         {
@@ -478,13 +482,13 @@ namespace OOP_Project
 
         public void LevelofClass()
         {
-            Console.WriteLine("In which level do you want to be ?");
+            Console.WriteLine("In which year do you want to be ?");
             level = Convert.ToInt32(Console.ReadLine());
             Random r = new Random();
             classe = r.Next(1, 3);
         }
 
-        public void StudentID()//to complete
+        public void StudentID()
         {
             StreamReader reader = new StreamReader(pathStudent);
             Random r = new Random();
@@ -507,11 +511,11 @@ namespace OOP_Project
 
         public void PayFees()
         {
-            Console.WriteLine($"Your scolarity fees are: {UnpaidFees}./n Do you want to pay them now ?. If you want to pay now, enter Y otherwise enter N");
+            Console.WriteLine($"Your scolarity fees are: {UnpaidFees}.\n Do you want to pay them now ?. If you want to pay now, enter Y otherwise enter N");
             string answer = Console.ReadLine();
             while (answer != "Y" && answer != "N")
             {
-                Console.WriteLine($"Your scolarity fees are: {UnpaidFees}./n Do you want to pay them now ?. If you want to pay now, enter Y otherwise enter N");
+                Console.WriteLine($"Your scolarity fees are: {UnpaidFees}.\n Do you want to pay them now ?. If you want to pay now, enter Y otherwise enter N");
                 answer = Console.ReadLine();
             }
             switch (answer)
@@ -546,5 +550,9 @@ namespace OOP_Project
             accessibilityData = mail + ";" + password + ";" + "student";
         }
 
+        public void DisplayPersonalInfos()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

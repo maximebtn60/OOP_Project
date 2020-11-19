@@ -3,21 +3,20 @@ using System.Collections.Generic;
 using System.Text;
 using System.IO;
 using System.Linq;
-
 namespace OOP_Project
 {
-    class FacilityMember : User, IPersonalInformations
+    public class FacilityMember : User, IPersonalInformations
     {
-        public string name { get ; set ; }
-        public string lastname { get ; set ; }
-        public string mail { get ; set ; }
-        public string phone { get ; set ; }
-        public string birthDate { get ; set ; }
+        public string name { get; set; }
+        public string lastname { get; set; }
+        public string mail { get; set; }
+        public string phone { get; set; }
+        public string birthDate { get; set; }
         public int numLevel { get; set; }
         public int level2 { get; set; }
         public int class2 { get; set; }
-
-        public List<string>[] disponibility { get; set; }
+        public List<string>[] disponibility = new List<string>[7];
+        public int NumClass { get; set; }
         List<Subject> subjectTaught = new List<Subject>();
         public List<Subject> SubjectTaught
         {
@@ -42,118 +41,24 @@ namespace OOP_Project
                 value = levelandclasses;
             }
         }
-        public List<Student> Class { get; set; }
-
-        public int NumClass { get; set; }
-        public FacilityMember(string login) : base()
+        public List<Classes> classes = new List<Classes>();
+        public List<Classes> ClassesStudent
         {
+            get { return this.ClassesStudent = classes; }
 
-            disponibility = new List<string>[7];
-            StreamReader readTeacher = new StreamReader(pathFacilityMember);
-            string temp2 = "";
-            while (temp2 != null)
-            {
-                temp2 = readTeacher.ReadLine();
-                if (temp2 == null) break;
-                string[] rTeacher = temp2.Split(';');
-                if (rTeacher[2] == login)
-                {
-                    this.name = rTeacher[0];
-                    this.lastname = rTeacher[1];
-                    this.login = rTeacher[2];
-                    this.phone = rTeacher[3];
-                    string[] rTeacher2 = rTeacher[4].Split(',');
-                    // subjects taught
-                    for (int i = 0; i < rTeacher2.Length; i++)
-                    {
-                        SubjectTaught.Add((Subject)Convert.ToInt32(rTeacher2[i]));
-                    }
+            set { value = classes; }
 
-                    // level and classes
-                    for (int j = 5; j < rTeacher.Length; j++)
-                    {
-                        LevelAndClasses level = new LevelAndClasses();
-                        string[] splitTab = rTeacher[j].Split(',');
-                        level.Level = (Convert.ToInt32(splitTab[0]));
-                        for (int k = 1; k < splitTab.Length; k++)
-                        {
-                            level.Classes.Add(Convert.ToInt32(splitTab[k]));
-                        }
-                        Levelandclasses.Add(level);
-                    }
-                    break;
-                }
-
-            }
-            readTeacher.Close();
-
-            Console.WriteLine("Level and class available:");
-            for (int i = 0; i < levelandclasses.Count; i++)
-            {
-                for (int j = 0; j < levelandclasses[i].Classes.Count; j++)
-                {
-                    Console.WriteLine($"Level: {levelandclasses[i].Level}, Class: {levelandclasses[i].Classes[j]}");
-                }
-            }
-            Console.WriteLine("choose the level and class");
-            Console.WriteLine("Level ?");
-            level2 = Convert.ToInt32(Console.ReadLine());
-            Console.WriteLine("Class ?");
-            class2 = Convert.ToInt32(Console.ReadLine());
-
-            StreamReader readStudent = new StreamReader(pathStudent);
-            string temp = "";
-            while (temp != null)
-            {
-                temp = readStudent.ReadLine();
-                if (temp == null) break;
-                string[] rstudent = temp.Split(';');
-                if (Convert.ToInt32(rstudent[9]) == level2 && Convert.ToInt32(rstudent[8]) == class2)
-                {
-                    Student student = new Student();
-                    student.name = rstudent[0];
-                    student.lastname = rstudent[1];
-                    student.mail = rstudent[2];
-                    student.StudentID = rstudent[3];
-                    student.birthDate = rstudent[4];
-                    student.Absences = Convert.ToInt32(rstudent[5]);
-                    student.phone = rstudent[6];
-                    if (rstudent[7] == "0") student.Tutor = false;
-                    else student.Tutor = true;
-                    student.GradeLevel = Convert.ToInt32(rstudent[8]);
-                    student.Workgroup = Convert.ToInt32(rstudent[9]);
-                    student.UnpaidFees = Convert.ToDouble(rstudent[10]);
-                    student.NbSubject = Convert.ToInt32(rstudent[11]);
-
-                    for (int j = 12; j < 12 + student.NbSubject; j++)
-                    {
-
-                        string[] splitTab = rstudent[j].Split(',');
-                        if (splitTab.Length > 1)
-                        {
-                            student.Courses.Add((Subject)Convert.ToInt32(splitTab[0]));
-                            int k = 0;
-                            Exam exam = new Exam();
-                            exam.Sub = Convert.ToInt32(splitTab[k]);
-                            exam.Mark = Convert.ToDouble(splitTab[k + 1]);
-                            exam.Coef = Convert.ToDouble(splitTab[k + 2]);
-                            exam.Date = splitTab[k + 3];
-                            student.Grades.Add(exam);
-
-                        }
-                        else
-                        {
-                            Subject adding = new Subject();
-                            adding = (Subject)Convert.ToInt32(splitTab[0]);
-                            student.Courses.Add(adding);
-
-                        }
-                    }
-                    Class.Add(student);
-                }
-            }
-            readStudent.Close();
         }
+        public List<Student> classe = new List<Student>();
+        public List<Student> Class
+        {
+            get { return this.Class = classe; }
+
+            set { value = classe; }
+
+        }
+
+
 
         // return true if the login and password are the good ones and also if the category(facilityMember) is true
         public override bool Login() //complete 
@@ -166,8 +71,7 @@ namespace OOP_Project
                 temp = reader.ReadLine();
                 if (temp == null) break;
                 string[] columns = temp.Split(';');
-                Console.WriteLine($"{columns[0]} {columns[1]} {columns[2]}");
-                if (columns[0] == login && columns[1] == password && columns[2] == "FacilityMember")// comparison between the datas of the file and the data given by the user 
+                if (columns[0] == login && columns[1] == password && columns[2] == "facilityMember")// comparison between the datas of the file and the data given by the user 
                 {
                     access = true;
                 }
@@ -198,72 +102,505 @@ namespace OOP_Project
             reader.Close();// closing of the streamreader
         }
 
-        private List<Student> DisplayTutorList()
+        public FacilityMember() : base()
         {
-            List<Student> tutorList = new List<Student>();
+            Console.WriteLine("Login ?");
+            login = Console.ReadLine();
+            Console.WriteLine("Password ?");
+            password = Console.ReadLine();
+            while (Login() == false)
+            {
+                if (Login() == true) break;
+                Console.WriteLine("Login ?");
+                login = Console.ReadLine();
+                Console.WriteLine("Password ?");
+                password = Console.ReadLine();
+            }
+
+            for (int i = 0; i < 7; i++) disponibility[i] = new List<string>();
+            ReadDispo();
+            StreamReader readTeacher = new StreamReader(pathFacilityMember);
+            string temp2 = "";
+            while (temp2 != null)
+            {
+                temp2 = readTeacher.ReadLine();
+                if (temp2 == null) break;
+                string[] rTeacher = temp2.Split(';');
+                if (rTeacher[2] == login)
+                {
+                    this.name = rTeacher[0];
+                    this.lastname = rTeacher[1];
+                    this.login = rTeacher[2];
+                    this.phone = rTeacher[3];
+                    string[] rTeacher2 = rTeacher[4].Split(',');
+                    // subjects taught
+                    for (int i = 0; i < rTeacher2.Length; i++)
+                    {
+                        SubjectTaught.Add((Subject)Convert.ToInt32(rTeacher2[i]));
+                    }
+
+                    // level and classes
+                    for (int j = 5; j < rTeacher.Length; j++)
+                    {
+                        LevelAndClasses level = new LevelAndClasses();
+                        string[] splitTab = rTeacher[j].Split(',');
+                        level.Level = (Convert.ToInt32(splitTab[0]));
+                        for (int k = 1; k < splitTab.Length; k++)
+                        {
+                            level.Classes.Add(Convert.ToInt32(splitTab[k]));
+                        }
+
+                        Levelandclasses.Add(level);
+                    }
+                    break;
+                }
+
+
+
+            }
+            readTeacher.Close();
+
+            Classes classe = new Classes();
+            for (int i = 0; i < Levelandclasses.Count; i++)
+            {
+                for (int j = 0; j < Levelandclasses[i].Classes.Count; j++)
+                {
+
+                    classe = new Classes();
+                    classe.Level = Levelandclasses[i].Level;
+                    classe.ClassGroup = Levelandclasses[i].Classes[j];
+                    StreamReader readStudent = new StreamReader(pathStudent);
+                    string temp = "";
+                    while (temp != null)
+                    {
+                        temp = readStudent.ReadLine();
+                        if (temp == null) break;
+                        string[] rstudent = temp.Split(';');
+                        if (Convert.ToInt32(rstudent[8]) == Levelandclasses[i].Level && Convert.ToInt32(rstudent[9]) == Levelandclasses[i].Classes[j])
+                        {
+                            bool ctor = false;
+                            Student student = new Student(ctor);
+                            student.name = rstudent[0];
+                            student.lastname = rstudent[1];
+                            student.mail = rstudent[2];
+                            student.StudentID = rstudent[3];
+                            student.birthDate = rstudent[4];
+                            student.Absences = Convert.ToInt32(rstudent[5]);
+                            student.phone = rstudent[6];
+                            if (rstudent[7] == "0") student.Tutor = false;
+                            else student.Tutor = true;
+                            student.GradeLevel = Convert.ToInt32(rstudent[8]);
+                            student.Workgroup = Convert.ToInt32(rstudent[9]);
+                            student.UnpaidFees = Convert.ToDouble(rstudent[10]);
+                            student.NbSubject = Convert.ToInt32(rstudent[11]);
+                            for (int l = 12; l < 12 + student.NbSubject; l++)
+                            {
+                                student.GradesTemp = student.GradesTemp + ";" + rstudent[l];
+                            }
+                            for (int l = 12; l < 12 + student.NbSubject; l++)
+                            {
+                                string[] splitTab = rstudent[l].Split(',');
+                                if (rstudent[l].Length > 1)
+                                {
+                                    student.Courses.Add((Subject)Convert.ToInt32(splitTab[0]));
+                                    int k = 0;
+                                    while (k < splitTab.Length)
+                                    {
+                                        Exam exam = new Exam();
+                                        exam.Sub = Convert.ToInt32(splitTab[k]);
+                                        exam.Mark = Convert.ToDouble(splitTab[k + 1]);
+                                        exam.Coef = Convert.ToDouble(splitTab[k + 2]);
+                                        exam.Date = splitTab[k + 3];
+                                        student.Grades.Add(exam);
+                                        k = k + 4;
+                                    }
+                                }
+                                else
+                                {
+                                    Subject adding = new Subject();
+                                    adding = (Subject)Convert.ToInt32(Convert.ToInt32(rstudent[l]));
+                                    student.Courses.Add(adding);
+                                }
+                            }
+                            string tut = null;
+                            if (student.Tutor == false) tut = "0";
+                            else tut = "1";
+                            student.Data = ($"{student.name};{student.lastname};{student.mail};{student.StudentID};{student.birthDate};{student.Absences};{phone};{tut};{student.GradeLevel};{student.Workgroup};{student.UnpaidFees};{student.NbSubject}{student.GradesTemp}");
+                            classe.ClassStudent.Add(student);
+
+                        }
+                    }
+                    readStudent.Close();
+                    ClassesStudent.Add(classe);
+                }
+            }
+            DesignationOfLevelAndClass();
+            Console.Clear();
+
+        }
+
+        public void ExeFunctions()
+        {
+            string carryOn = "N";
+            int compt = 0;
+            while (carryOn == "N")
+            {
+                DisplayPersonalInfos();
+                if (compt > 0) DesignationOfLevelAndClass();
+                compt++;
+                Console.WriteLine("1. Add new notes to a class\n" +
+                    "2. Display tutor list\n" +
+                    "3. Display Attendance of a student\n" +
+                    "4. Display student results\n" +
+                    "5. Display Exams of the year\n" +
+                    "6. Add exam assignments\n" +
+                    "7. Give absences to student\n" +
+                    "8. Take off absences of a student\n" +
+                    "9. Add Disponibility\n" +
+                    "10. Delete disponibilities\n" +
+                    "11. Edit Disponibilities\n" +
+                    "12. Display Disponibilities\n" +
+                    "13. Display tutor information\n" +
+                    "14. Mean of an exam\n" +
+                    "15. Display the name of the students in the class\n" +
+                    "16. Disconnect\n");
+
+                int switchCase = Convert.ToInt32(Console.ReadLine());
+                switch (switchCase)
+                {
+                    case 1:
+                        AddResultsExam();
+                        break;
+                    case 2:
+                        DisplayTutorList();
+                        break;
+                    case 3:
+                        Console.WriteLine("First name of the student");
+                        string fN = Console.ReadLine();
+                        Console.WriteLine("Last name of the student");
+                        string lN = Console.ReadLine();
+                        DisplayAttendancePerStudent(fN, lN);
+                        break;
+                    case 4:
+                        DisplayStudentResults();
+                        break;
+                    case 5:
+                        DisplayExams();
+                        break;
+                    case 6:
+                        AddExamAssignment();
+                        break;
+                    case 7:
+                        GiveAbsenceToStudents();
+                        break;
+                    case 8:
+                        TakeOffAbsences();
+                        break;
+                    case 9:
+                        ReadDispo();
+                        DisplayDispo();
+                        AddDispo();
+                        WriteDispo();
+                        DisplayDispo();
+                        break;
+                    case 10:
+                        ReadDispo();
+                        DisplayDispo();
+                        RemoveDispo();
+                        DisplayDispo();
+                        break;
+                    case 11:
+                        ReadDispo();
+                        DisplayDispo();
+                        EditDispo();
+                        DisplayDispo();
+                        break;
+                    case 12:
+                        ReadDispo();
+                        DisplayDispo();
+                        break;
+                    case 13:
+                        Console.WriteLine("First name of the tutor");
+                        fN = Console.ReadLine();
+                        Console.WriteLine("Last name of the tutor");
+                        lN = Console.ReadLine();
+                        DisplayTutorInfo(fN, lN);
+                        break;
+                    case 14:
+                        DisplayStudentResults();
+                        MeanExam();
+                        break;
+                    case 15:
+                        DisplayStudentClass();
+                        break;
+                    case 16:
+                        break;
+                }
+                Console.WriteLine();
+                Console.WriteLine("Do you want to disconnect? if yes, enter Y else enter N");
+                carryOn = Console.ReadLine();
+                while (carryOn != "Y" && carryOn != "N")
+                {
+                    Console.WriteLine("Do you want to disconnect? if yes, enter Y else enter N");
+                    carryOn = Console.ReadLine();
+                }
+                Console.Clear();
+            }
+        }
+
+        private void DisplayStudentClass()
+        {
+            if (Class.Count != 0)
+            {
+                Console.WriteLine("Level: " + Class[0].Level);
+                Console.WriteLine("Class: " + Class[0].Class);
+                foreach (Student stud in Class)
+                {
+                    Console.WriteLine(stud.name + " " + stud.lastname);
+                }
+            }
+            else
+            {
+                Console.WriteLine("There are no students in this class");
+            }
+
+        }
+
+        public void DisplayPersonalInfos()
+        {
+
+            Console.WriteLine($"First Name: {name}\n" +
+                $"Last Name: {lastname}\n" +
+                $"phone number: {phone}\n" +
+                $"email address: {login}\n" +
+                $"subject(s) taught: {SubjectsTaught()}\n ");
+        }
+
+        public string SubjectsTaught()
+        {
+            string sub = null;
+            for (int i = 0; i < SubjectTaught.Count; i++)
+            {
+                sub = sub + " " + Convert.ToString(SubjectTaught[i]);
+            }
+            return sub;
+        }
+
+        public void MeanExam()
+        {
+
+            for (int i = 0; i < subjectTaught.Count; i++)
+            {
+                Console.Write(subjectTaught[i] + " ");
+            }
+            Console.WriteLine();
+            Console.WriteLine("Choose the subject");
+            string subject = Console.ReadLine();
+            Console.WriteLine("Date ?");
+            string date = Console.ReadLine();
+
+            double sum = 0;
+            int num = 0;
+            for (int i = 0; i < Class.Count; i++)
+            {
+                for (int j = 0; j < Class[i].Grades.Count; j++)
+                {
+
+                    if (Class[i].Grades[j].Date == date && Convert.ToString((Subject)Class[i].Grades[j].Sub) == subject)
+                    {
+
+                        sum = sum + Class[i].Grades[j].Mark;
+                        num++;
+                    }
+                }
+
+            }
+            double mean = sum / num;
+            Console.WriteLine($"The mean of this exam is {mean}");
+
+        }
+
+        private void DesignationOfLevelAndClass()
+        {
+            Class = new List<Student>();
+            while (Class.Count == 0)
+            {
+
+                for (int i = 0; i < levelandclasses.Count; i++)
+                {
+                    Console.WriteLine("Level: " + levelandclasses[i].Level);
+                    Console.Write("Classes: ");
+                    for (int j = 0; j < levelandclasses[i].Classes.Count; j++)
+                    {
+                        Console.Write(levelandclasses[i].Classes[j] + " ");
+                    }
+                    Console.WriteLine();
+                }
+                Console.WriteLine("Choice of the class and level to modify");
+                Console.WriteLine("Level ?");
+                level2 = Convert.ToInt32(Console.ReadLine());
+                Console.WriteLine("class ?");
+                class2 = Convert.ToInt32(Console.ReadLine());
+                for (int m = 0; m < ClassesStudent.Count; m++)
+                {
+                    if (ClassesStudent[m].Level == level2 && ClassesStudent[m].ClassGroup == class2)
+                    {
+                        for (int i = 0; i < ClassesStudent[m].ClassStudent.Count; i++)
+                        {
+                            Class.Add(ClassesStudent[m].ClassStudent[i]);
+                        }
+                    }
+                }
+                if (Class.Count == 0)
+                {
+                    Console.WriteLine("Enter another level and/or class, there is no student assigned to this class");
+                }
+            }
+        }
+
+        private void DisplayTutorList()
+        {
+            bool test = true;
             foreach (Student student in Class)
             {
-                if (student.Tutor == true) tutorList.Add(student);
+                if (student.Tutor == true) Console.WriteLine(student.name + " " + student.lastname); test = false;
             }
-            return tutorList;
+            if (test == true) Console.WriteLine("No student in this class is a tutor");
+            Console.WriteLine();
         }
-        private void DisplayTutorInfo(Student student)
+
+        private void DisplayTutorInfo(string firstName, string lastName)
         {
-            if (student.Tutor == true)
+            foreach (Student student in Class)
             {
-                Console.WriteLine(student.ToString());
+                if (student.Tutor == true && student.name == firstName && student.lastname == lastName) student.DisplayPersonalInfos();
+                if (student.name == firstName && student.lastname == lastName) Console.WriteLine("This student is not a tutor.");
             }
         }
-        private void DisplayAttendancePerStudent(Student student)
+
+        private void DisplayAttendancePerStudent(string name, string lastName)
         {
-            Console.WriteLine($"The student {student.lastname} {student.name} has been absent {student.Absences} times");
+            foreach (Student stud in Class)
+            {
+                if (stud.name == name && stud.lastname == lastName)
+                {
+                    Console.WriteLine($"The student {stud.lastname} {stud.name} has been absent {stud.Absences} times");
+                }
+
+            }
+
         }
-        private void DisplayStudentResults(Student student)
+
+        private void DisplayStudentResults()
         {
-            foreach (Exam exam in student.Grades) Console.WriteLine($"subject:{exam.Sub} Mark:{exam.Mark} coef:{exam.Coef}");
+            foreach (Student stud in Class)
+            {
+                Console.WriteLine(stud.name + " " + stud.lastname + ":");
+                if (stud.Grades.Count == 0) Console.WriteLine("There are no results for this student");
+                foreach (Exam exam in stud.Grades)
+                {
+                    Console.WriteLine($"subject:{(Subject)exam.Sub} Mark:{exam.Mark} coef:{exam.Coef} date:{exam.Date}");
+                }
+                Console.WriteLine();
+            }
+
+
         }
+
+        public void DisplayExams()
+        {
+            for (int i = 0; i < Levelandclasses.Count; i++)
+            {
+                for (int j = 0; j < Levelandclasses[i].Classes.Count; j++)
+                {
+                    Console.Write("Level " + Levelandclasses[i].Level + " ");
+                    Console.WriteLine("Class " + Levelandclasses[i].Classes[j]);
+                    Calendar.ReadExamAssignment(Levelandclasses[i].Classes[j], Levelandclasses[i].Level);
+                    Console.WriteLine();
+
+                }
+            }
+        }
+
+        public void AddExamAssignment()
+        {
+            string[] EnumTab = Enum.GetNames(typeof(Subject));
+            Console.Write("Choose the subject of the assignment ");
+            for (int i = 0; i < EnumTab.Length; i++)
+            {
+                Console.Write(EnumTab[i] + " ");
+            }
+            Console.WriteLine();
+            string subject = Console.ReadLine();
+            Console.WriteLine("Year ?");
+            int year = Convert.ToInt32(Console.ReadLine());
+            Console.WriteLine("Month ?");
+            int month = Convert.ToInt32(Console.ReadLine());
+            Console.WriteLine("Day ?");
+            int day = Convert.ToInt32(Console.ReadLine());
+            Console.WriteLine("Hour ?");
+            int hour = Convert.ToInt32(Console.ReadLine());
+            Console.WriteLine("Minute ?");
+            int minute = Convert.ToInt32(Console.ReadLine());
+            DateTime date = new DateTime(year, month, day, hour, minute, 00);
+            Console.WriteLine("Description of the exam");
+            string description = Console.ReadLine();
+
+            Calendar.AddExamAssignment(subject, date, description, class2, level2);
+        }
+
         private string DisplayAdminInfos(Admin admin)
         {
             return admin.ToString();
         }
+
         public void AddResultsExam()
         {
+
             string[] tabEnum = Enum.GetNames(typeof(Subject));
             Exam exam = new Exam();
-            string coursesAvailable = null;
+            //string coursesAvailable = null;
             string[] test = Enum.GetNames(typeof(Subject));
+            /*
             for (int index = 0; index < test.Length; index++)
             {
                 coursesAvailable = (coursesAvailable + " " + test[index]);
-            }
-            Console.WriteLine("Enter the subject : " + coursesAvailable);
+            }*/
+
+            Console.WriteLine("Enter the subject : " + SubjectsTaught());
             string subjects = Console.ReadLine();
-            for (int i = 0; i < tabEnum.Length; i++)
+            int i = 0;
+            for (; i < tabEnum.Length; i++)
             {
                 if (subjects == tabEnum[i])
                 {
                     exam.Sub = i;
+                    break;
                 }
             }
 
             Console.Write("Enter the coefficient : ");
-            exam.Coef = Convert.ToDouble(Console.ReadLine());
-            double mark = new double();
+            double Coef = Convert.ToDouble(Console.ReadLine());
             Console.Write("Enter the date of the exam : ");
-            exam.Date = Console.ReadLine();
+            string Date = Console.ReadLine();
 
-            foreach (Student student in Class)
+            for (int j = 0; j < Class.Count; j++)
             {
-                if (CheckCourses((Subject)exam.Sub, student) == true)
+                if (CheckCourses((Subject)i, Class[j]) == true)
                 {
-                    Console.Write($"Enter the mark of {student.lastname} {student.name} : ");
+                    exam = new Exam();
+                    exam.Coef = Coef;
+                    exam.Date = Date;
+                    exam.Sub = i;
+                    Console.Write($"Enter the mark of {Class[j].lastname} {Class[j].name} : ");
                     exam.Mark = Convert.ToDouble(Console.ReadLine());
-                    student.Grades.Add(exam);
+                    Class[j].Grades.Add(exam);
                 }
             }
 
             AddGradesToStudentFile((Subject)exam.Sub);
         }
+
         public void AddGradesToStudentFile(Subject sub)//modify the student list, need to be used after AddResultsExam()
         {
             List<Student> listStudent = new List<Student>();// list of the students who have grades added
@@ -277,12 +614,13 @@ namespace OOP_Project
                         tabExam[j] = Class[i].Grades[j];
                     }
                     Sort(tabExam);//sort the tabExam 
-                    string grades = Convert.ToString(tabExam[0].Sub);
+
+                    string grades = null;
                     // 2 cases: the student has 1 exam in his tab or he has more than one
                     if (tabExam.Length == 1)
                     {
-                        grades = grades + "," + tabExam[0].ToString();
-
+                        //grades = Convert.ToString(tabExam[0].Sub);
+                        grades = grades + tabExam[0].ToString();
                         for (int j = 0; j < Class[i].Courses.Count; j++)// add the number of the course that hasn't been modified
                         {
                             if (Class[i].Courses[j] != (Subject)tabExam[0].Sub)
@@ -303,14 +641,16 @@ namespace OOP_Project
                     }
                     else
                     {
-                        for (int k = 0; k < tabExam.Length - 1; k++)
+                        grades = tabExam[0].ToString();
+                        for (int k = 1; k < tabExam.Length - 1; k++)
                         {
                             // 2 possibilities: the exam is in the same subject than the next exam in the tabExam or it is not.
                             if (tabExam[k].Sub == tabExam[k + 1].Sub) grades = grades + "," + tabExam[k].ToString();
-                            else grades = grades + "," + tabExam[k].ToString() + ";" + Convert.ToString(tabExam[k + 1].Sub);
+                            else grades = grades + "," + tabExam[k].ToString() + ";";
 
                         }
-                        grades = grades + "," + tabExam[tabExam.Length - 1].ToString();
+                        if (tabExam[tabExam.Length - 2].Sub == tabExam[tabExam.Length - 1].Sub) grades = grades + "," + tabExam[tabExam.Length - 1].ToString();
+                        else grades = grades + tabExam[tabExam.Length - 1].ToString();
 
 
                         List<int> save = new List<int>();
@@ -353,7 +693,6 @@ namespace OOP_Project
                     else tutor = "1";
                     Class[i].Data = ($"{Class[i].name};{Class[i].lastname};{Class[i].mail};{Class[i].StudentID};{Class[i].birthDate};{Class[i].Absences};{Class[i].phone};{tutor};{Class[i].GradeLevel};{Class[i].Workgroup};{Class[i].UnpaidFees};{Class[i].NbSubject}");
                     Class[i].Data = Class[i].Data + ";" + grades;
-                    Console.WriteLine(Class[i].Data);
                     listStudent.Add(Class[i]);
                 }
             }
@@ -443,6 +782,7 @@ namespace OOP_Project
             }
             return check;
         }
+
         private void GiveAbsenceToStudents()
         {
             Console.WriteLine("who is absent ? ");
@@ -456,18 +796,48 @@ namespace OOP_Project
                 if (student.lastname == forenameAbs && student.name == nameAbs)
                 {
                     student.Absences += 1;
+                    student.ModifyDataStudent();
+
                     test = true;
                 }
             }
             if (test == false) Console.WriteLine("the student has not been found");
         }
-        private void GiveHomework()
+
+        private void TakeOffAbsences()
+        {
+
+            Console.WriteLine("last name : ");
+            string lastNameAbs = Console.ReadLine();
+            Console.WriteLine("first name : ");
+            string nameAbs = Console.ReadLine();
+            Console.WriteLine("Number of absences you want to take off");
+            int absences = Convert.ToInt32(Console.ReadLine());
+            bool test = false;
+            foreach (Student student in Class)
+            {
+                if (student.lastname == lastNameAbs && student.name == nameAbs)
+                {
+                    if (student.Absences - absences > -1)
+                    {
+                        student.Absences = student.Absences - absences;
+                        student.ModifyDataStudent();
+                    }
+                    else Console.WriteLine("The number of absences you want to take off is impossible.");
+                    test = true;
+                }
+            }
+            if (test == false) Console.WriteLine("the student has not been found");
+
+        }
+
+        private void GiveHomework()//to do
         {
             //lorsqu'on aura décidé d'une plateforme pour mettre les devoirs
         }
+
         public void EditStudents()
         {
-            StreamWriter writer = new StreamWriter(pathStudent);
             string line = "";
             foreach (Student student in Class)
             {
@@ -477,6 +847,7 @@ namespace OOP_Project
             }
 
         }
+
         public List<string>[] ReadDispo()
         {
             string disponibilities = "";
@@ -485,7 +856,7 @@ namespace OOP_Project
             while (line != null)
             {
                 line = dispoReader.ReadLine();
-                if (line == null) break;
+                if (line == null | line == "") break;
                 if (line.Split(';')[0] == name & line.Split(';')[1] == lastname)
                 {
                     disponibilities = line;
@@ -502,6 +873,7 @@ namespace OOP_Project
             }
             return disponibility;
         }
+
         public void AddDispo()
         {
             string test = "yes";
@@ -517,9 +889,10 @@ namespace OOP_Project
                 int day = Convert.ToInt32(Console.ReadLine());
                 while (dtest == "yes")
                 {
+
                     Console.Write("Enter a time slot (ex 09:30-11:00) : ");
                     string slot = Console.ReadLine();
-                    if (disponibility[day + 1].Count == 0) disponibility[day + 1].Add(slot);
+                    if (disponibility[day + 1].Count == 0) { disponibility[day + 1].Add(slot); }
                     else
                     {
                         for (int compt = 0; compt < disponibility[day + 1].Count; compt++)
@@ -545,6 +918,7 @@ namespace OOP_Project
                 test = Console.ReadLine();
             }
         }
+
         public void RemoveDispo()
         {
             string test = "yes";
@@ -573,14 +947,15 @@ namespace OOP_Project
                 test = Console.ReadLine();
             }
         }
+
         public void DisplayDispo()
         {
             string days = "Monday          Tuesday         Wednesday       Thursday        Friday";
             string space1 = "           ";
             string space2 = "     ";
             string line = "";
-            Console.Write(disponibility[0][0]);
-            Console.WriteLine(disponibility[1][0]);
+            //Console.Write(disponibility[0][0]);
+            //Console.WriteLine(disponibility[1][0]);
             Console.WriteLine(days);
             for (int i = 0; i < 8; i++)
             {
@@ -594,27 +969,12 @@ namespace OOP_Project
             }
         }
 
-        public void DisplayExam()
+        public void WriteDispo()
         {
-            for (int i = 0; i < Levelandclasses.Count; i++)
+            string disponibilities = name + ";" + lastname;
+            for (int i = 1; i < 6; i++)         //transtype to string
             {
-                for (int j = 0; j < Levelandclasses[i].Classes.Count; j++)
-                {
-                    Console.Write("Level " + Levelandclasses[i].Level + " ");
-                    Console.WriteLine("Class " + Levelandclasses[i].Classes[j]);
-                    Calendar.ReadExamAssignment(Levelandclasses[i].Classes[j], Levelandclasses[i].Level);
-                    Console.WriteLine("passe");
-                    Console.WriteLine();
 
-                }
-            }
-        }
-        public void WriteDispo()            //à déplacer dans Admin
-        {
-            string disponibilities = "";
-            disponibilities = disponibility[0][0];
-            for (int i = 0; i < 6; i++)         //transtype to string
-            {
                 disponibilities += ";";
                 if (disponibility[i + 1].Count != 0)
                 {
@@ -636,20 +996,33 @@ namespace OOP_Project
                 lines.Add(line);
             }
             streamReader.Close();
+            bool check = true;
             for (int i = 0; i < lines.Count; i++)
             {
-                if (lines[i].Contains($"{name};{lastname}") == true) lines[i] = disponibilities;
+                if (lines[i].Contains($"{name};{lastname}") == true)
+                {
+                    lines[i] = disponibilities;
+                    check = false;
+                }
+            }
+            if (check == true)
+            {
+                Console.WriteLine("passe2");
+                Console.WriteLine(disponibilities);
+                lines.Add(disponibilities);
             }
             File.Delete(PathDispo);
             FileStream stream = new FileStream(PathDispo, FileMode.OpenOrCreate);
-            stream.Dispose();
-            StreamWriter streamWriter = new StreamWriter(PathDispo);
-            foreach (string l in lines)
+            using (StreamWriter streamWriter = new StreamWriter(stream))
             {
-                streamWriter.WriteLine(l);
+                foreach (string l in lines)
+                {
+                    streamWriter.WriteLine(l);
+                }
             }
-            streamWriter.Close();
+            stream.Dispose();
         }
+
         public void EditDispo()
         {
             disponibility = ReadDispo();
@@ -681,6 +1054,9 @@ namespace OOP_Project
             }
             WriteDispo();
         }
+
+
+
 
     }
 }

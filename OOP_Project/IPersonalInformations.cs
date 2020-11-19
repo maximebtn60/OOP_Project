@@ -12,5 +12,6 @@ namespace OOP_Project
         string phone { get; set; }
         string birthDate { get; set; } //date under the format xx/xx/xxxx
 
+        void DisplayPersonalInfos();
     }
 }

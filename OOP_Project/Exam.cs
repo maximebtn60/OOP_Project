@@ -10,18 +10,27 @@ namespace OOP_Project
         public double Coef { get; set; }
         public int Sub { get; set; }
         public string Date { get; set; }
-        public Exam(double Mark, double Coef, int Sub, string Date)
+
+
+        public Exam(double Mark, double Ceof, int Sub, string Date)
         {
             this.Mark = Mark;
             this.Coef = Coef;
             this.Sub = Sub;
             this.Date = Date;
         }
+
         public Exam() { }
 
         public override string ToString()
         {
-            string exam = ($"{Mark},{Coef},{Date}");
+            string exam = ($"{Sub},{Mark},{Coef},{Date}");
+            return exam;
+        }
+
+        public string ToString2()
+        {
+            string exam = ($"Subject: {(Subject)Sub}, Mark: {Mark}, Coefficient: {Coef}, Date: {Date}");
             return exam;
         }
     }

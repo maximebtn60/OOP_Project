@@ -10,9 +10,9 @@ namespace OOP_Project
         public string password;
         public string pathAccessibilityLevel = ".//AccessibilityLevel.txt";
         public string pathStudent = ".//Student.txt";
-        public string pathFacilityMember = null; // to complete
-        public string pathAdmin = null; // to complete
-        public string PathDispo { get; set; }
+        public string pathFacilityMember = ".//FacilityMember.txt";
+        public string pathAdmin = ".//Admin.txt";
+        public string PathDispo = ".//Disponibilities.txt";
 
 
         public abstract bool Login();
