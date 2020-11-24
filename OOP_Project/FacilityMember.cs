@@ -256,14 +256,12 @@ namespace OOP_Project
                     "6. Add exam assignments\n" +
                     "7. Give absences to student\n" +
                     "8. Take off absences of a student\n" +
-                    "9. Add Disponibility\n" +
-                    "10. Delete disponibilities\n" +
-                    "11. Edit Disponibilities\n" +
-                    "12. Display Disponibilities\n" +
-                    "13. Display tutor information\n" +
-                    "14. Mean of an exam\n" +
-                    "15. Display the name of the students in the class\n" +
-                    "16. Disconnect\n");
+                    "9. Edit Disponibilities\n" +
+                    "10. Display Disponibilities\n" +
+                    "11. Display tutor information\n" +
+                    "12. Mean of an exam\n" +
+                    "13. Display the name of the students in the class\n" +
+                    "14. Disconnect\n");
 
                 int switchCase = Convert.ToInt32(Console.ReadLine());
                 switch (switchCase)
@@ -297,43 +295,27 @@ namespace OOP_Project
                         TakeOffAbsences();
                         break;
                     case 9:
-                        ReadDispo();
-                        DisplayDispo();
-                        AddDispo();
-                        WriteDispo();
-                        DisplayDispo();
+                        EditDispo();
                         break;
                     case 10:
                         ReadDispo();
                         DisplayDispo();
-                        RemoveDispo();
-                        DisplayDispo();
                         break;
                     case 11:
-                        ReadDispo();
-                        DisplayDispo();
-                        EditDispo();
-                        DisplayDispo();
-                        break;
-                    case 12:
-                        ReadDispo();
-                        DisplayDispo();
-                        break;
-                    case 13:
                         Console.WriteLine("First name of the tutor");
                         fN = Console.ReadLine();
                         Console.WriteLine("Last name of the tutor");
                         lN = Console.ReadLine();
                         DisplayTutorInfo(fN, lN);
                         break;
-                    case 14:
+                    case 12:
                         DisplayStudentResults();
                         MeanExam();
                         break;
-                    case 15:
+                    case 13:
                         DisplayStudentClass();
                         break;
-                    case 16:
+                    case 14:
                         break;
                 }
                 Console.WriteLine();
@@ -569,31 +551,146 @@ namespace OOP_Project
 
             Console.WriteLine("Enter the subject : " + SubjectsTaught());
             string subjects = Console.ReadLine();
-            int i = 0;
-            for (; i < tabEnum.Length; i++)
+            if (SubjectsTaught().Contains(subjects) == false)
             {
-                if (subjects == tabEnum[i])
+                while (SubjectsTaught().Contains(subjects) == false)
                 {
-                    exam.Sub = i;
+                    Console.WriteLine("Please enter a correct subject : " + SubjectsTaught());
+                    subjects = Console.ReadLine();
+                }
+            }
+            int k = 0;
+            for (; k < tabEnum.Length; k++)
+            {
+                if (subjects == tabEnum[k])
+                {
+                    exam.Sub = k;
                     break;
                 }
             }
 
             Console.Write("Enter the coefficient : ");
-            double Coef = Convert.ToDouble(Console.ReadLine());
-            Console.Write("Enter the date of the exam : ");
+            bool cTest = false;
+            double Coef = -1;
+            while (cTest == false)
+            {
+                try
+                {
+                    Coef = Convert.ToDouble(Console.ReadLine());
+                }
+                catch (Exception)
+                {
+                    ;
+                    cTest = false;
+                }
+                if (Coef >= 0) break;
+                else Console.WriteLine("Please enter a correct coeficient");
+            }
+
+            Console.WriteLine("Enter the date of the exam : dd/mm/yyyy european date format");
             string Date = Console.ReadLine();
+            bool check = false;
+            while (check == false)
+            {
+                check = true;
+                char[] tabAut = new char[] { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '/' };
+                bool num = false;
+                int checkSlash = 0;
+                for (int i = 0; i < Date.Length; i++)
+                {
+                    num = false;
+                    for (int j = 0; j < tabAut.Length; j++)
+                    {
+                        if (Date[i] == tabAut[j]) num = true;
+                    }
+                    if (Date[i] == '/') checkSlash++;
+                    if (num == false) check = false;
+
+                }
+                if (checkSlash != 2) check = false;
+
+                if (Date.Length > 5 && check == true)
+                {
+                    // add a zero if you don't put a zero before your number. ex: 1/1/2000 becomes 01/01/2000
+                    int decal = 0;
+                    string nDate = null;
+                    if (Date[2] != '/' || Date[5] != '/')
+                    {
+                        for (int i = 0; i < birthDate.Length; i++)
+                        {
+                            if (birthDate[i] == '/')
+                            {
+                                if (i == 1) nDate = "0";
+                                if (i == 3) nDate = nDate + birthDate[0] + "/" + "0" + birthDate[i - 1]; decal = 1;
+                                if (i == 2) nDate = nDate + birthDate[0] + birthDate[1] + birthDate[2] + "0"; i = 3; decal = 1;
+                                if (i == 1 && birthDate[4] == '/') nDate = "0" + birthDate[0]; decal = 1;
+                            }
+                            if (decal == 1) nDate = nDate + birthDate[i];
+                        }
+                        birthDate = nDate;
+                    }
+
+                    if (Date.Length != 10) check = false;
+                    if (Date[2] != '/') check = false;
+                    if (Date[5] != '/') check = false;
+                    if (check == true)
+                    {
+                        // check if the year, month and day are reasonable
+                        string[] tabDate = Date.Split('/');
+                        int day = Convert.ToInt32(tabDate[0]);
+                        int month = Convert.ToInt32(tabDate[1]);
+                        int year = Convert.ToInt32(tabDate[2]);
+
+                        if (year < 1901) check = false;
+                        if (year > DateTime.Today.Year) check = false;
+
+                        if (month < 1 || month > 12) check = false;
+
+                        if (check == true)
+                        {
+                            int[] daysInMonth = new int[] { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
+                            int[] daysInMonthBissextile = new int[] { 31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
+                            bool biss = DateTime.IsLeapYear(year);
+                            if (biss == true) if (day < 1 || day > daysInMonthBissextile[month - 1]) check = false;
+                                else if (day < 1 || day > daysInMonth[month - 1]) check = false;
+                        }
+                    }
+                }
+                else check = false;
+                if (check == false)
+                {
+                    Console.WriteLine("The exam date has an input error. ");
+                    Console.WriteLine("Exam date ? dd/mm/yyyy");
+                    Date = Console.ReadLine();
+                }
+            }
+
 
             for (int j = 0; j < Class.Count; j++)
             {
-                if (CheckCourses((Subject)i, Class[j]) == true)
+                if (CheckCourses((Subject)k, Class[j]) == true)
                 {
                     exam = new Exam();
                     exam.Coef = Coef;
                     exam.Date = Date;
-                    exam.Sub = i;
+                    exam.Sub = k;
                     Console.Write($"Enter the mark of {Class[j].lastname} {Class[j].name} : ");
-                    exam.Mark = Convert.ToDouble(Console.ReadLine());
+                    bool mTest = false;
+                    double mark = -1;
+                    while (mTest == false)
+                    {
+                        try
+                        {
+                            mark = Convert.ToDouble(Console.ReadLine());
+                        }
+                        catch (Exception)
+                        {
+                            cTest = false;
+                        }
+                        if (mark >= 0) break;
+                        else Console.WriteLine("Please enter a correct mark");
+                    }
+                    exam.Mark = mark;
                     Class[j].Grades.Add(exam);
                 }
             }
@@ -879,6 +976,8 @@ namespace OOP_Project
             string test = "yes";
             while (test == "yes")
             {
+                Console.Clear();
+                DisplayDispo();
                 string dtest = "yes";
                 Console.WriteLine("Which day are you disponible ?");
                 Console.WriteLine("Monday : type 1");
@@ -889,25 +988,62 @@ namespace OOP_Project
                 int day = Convert.ToInt32(Console.ReadLine());
                 while (dtest == "yes")
                 {
-
                     Console.Write("Enter a time slot (ex 09:30-11:00) : ");
                     string slot = Console.ReadLine();
+                    bool stest = false;
+                    string numbers = "0123456789";
+                    int[] positions = { 0, 1, 3, 4, 6, 7, 9, 10 };
+                    while (stest == false)                         //check if the slot format is correct
+                    {
+                        bool test1 = false;
+                        bool test2 = false;
+                        bool test3 = false;
+                        if (slot.Length == 11)
+                        {
+                            if (slot[5] == '-') test1 = true;
+                            if (slot[2] == ':' & slot[8] == ':') test2 = true;
+                            int compt = 0;
+                            foreach (int p in positions)
+                            {
+                                if (numbers.Contains(slot[p])) compt++;
+                            }
+                            if (compt == 8) test3 = true;
+                            if (test1 == true & test2 == true & test3 == true) stest = true;
+                            else
+                            {
+                                Console.Write("please enter a correct time slot (ex 09:30-11:00) : ");
+                                slot = Console.ReadLine();
+                            }
+                        }
+                        else
+                        {
+                            Console.Write("please enter a correct time slot (ex 09:30-11:00) : ");
+                            slot = Console.ReadLine();
+                        }
+                    }
                     if (disponibility[day + 1].Count == 0) { disponibility[day + 1].Add(slot); }
                     else
                     {
-                        for (int compt = 0; compt < disponibility[day + 1].Count; compt++)
+                        for (int compt = 0; compt < disponibility[day + 1].Count; compt++)          //Adds the time slot at the correct position
                         {
                             if (slot.CompareTo(disponibility[day + 1][compt]) == 0)              //case if the time slot is already entered
                             {
                                 Console.WriteLine("the time slot is already filled");
                                 break;
                             }
-                            if ((slot.CompareTo(disponibility[day + 1][compt]) < 0) | (slot.CompareTo(disponibility[day + 1][compt]) > 0 & compt == disponibility[day + 1].Count))               //case if the time entered is before another
+                            if ((slot.CompareTo(disponibility[day + 1][compt]) < 0))               //case if the time entered is before another
                             {
                                 disponibility[day + 1].Insert(compt, slot);
                                 break;
                             }
+                            if ((slot.CompareTo(disponibility[day + 1][compt]) > 0 & compt == disponibility[day + 1].Count - 1))
+                            {
+                                disponibility[day + 1].Insert(compt + 1, slot);
+                                break;
+                            }
                         }
+                        Console.Clear();
+                        DisplayDispo();
                     }
                     Console.WriteLine("Do you want to add another disponibility this day ?");    //while loop exit
                     Console.Write("type yes or no : ");
@@ -921,10 +1057,12 @@ namespace OOP_Project
 
         public void RemoveDispo()
         {
-            string test = "yes";
-            while (test == "yes")
+            string test = "";
+            while (test != "no")
             {
-                string dtest = "yes";
+                Console.Clear();
+                DisplayDispo();
+                string dtest = "";
                 Console.WriteLine("Which day are you no longer disponible ?");
                 Console.WriteLine("Monday : type 1");
                 Console.WriteLine("Tuesday : type 2");
@@ -932,19 +1070,29 @@ namespace OOP_Project
                 Console.WriteLine("Thursday : type 4");
                 Console.WriteLine("Friday : type 5");
                 int day = Convert.ToInt32(Console.ReadLine());
-                while (dtest == "yes")
+                while (dtest != "no")
                 {
                     Console.Write("Enter the time slot you wish to remove (ex 09:30-11:00) : ");
                     string slot = Console.ReadLine();
                     if (disponibility[day + 1].Contains(slot)) disponibility[day + 1].Remove(slot); //remove an instance of the slot entered if it exists
                     else Console.WriteLine("No matching time slot found this day.");
+                    Console.Clear();
+                    DisplayDispo();
                     Console.WriteLine("Do you want to remove another disponibility this day ?");    //while loop exit
-                    Console.Write("type yes or no : ");
-                    dtest = Console.ReadLine();
+                    while (dtest != "yes" & dtest != "no")
+                    {
+                        Console.Write("type yes or no : ");
+                        dtest = Console.ReadLine();
+                    }
+                    if (dtest == "no") break;
                 }
                 Console.WriteLine("Do you want to remove disponibilities on another day ?");       //while loop exit
-                Console.Write("type yes or no : ");
-                test = Console.ReadLine();
+                while (test != "yes" & test != "no")
+                {
+                    Console.Write("type yes or no : ");
+                    test = Console.ReadLine();
+                }
+                if (test == "no") break;
             }
         }
 
@@ -1027,14 +1175,12 @@ namespace OOP_Project
         {
             disponibility = ReadDispo();
 
-            foreach (List<string> l in disponibility)
-            {
-                foreach (string s in l) Console.Write(s);
-            }
 
             string test1 = "";
             while (test1 != "3")
             {
+                Console.Clear();
+                DisplayDispo();
                 Console.WriteLine("What do you want to do ?");
                 Console.WriteLine("1 : Add a disponibility");
                 Console.WriteLine("2 : Remove a disponibility");
@@ -1043,20 +1189,14 @@ namespace OOP_Project
                 if (test1 == "3") break;
                 if (test1 == "1")
                 {
-                    DisplayDispo();
                     AddDispo();
                 }
                 if (test1 == "2")
                 {
-                    DisplayDispo();
                     RemoveDispo();
                 }
             }
             WriteDispo();
         }
-
-
-
-
     }
 }

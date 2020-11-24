@@ -27,8 +27,8 @@ namespace OOP_Project
         public string Data { get; set; }
 
 
-        List<Subject> courses = new List<Subject>();
-        public List<Subject> Courses// A voir si on ne fait pas plutôt un tableau au lieu d'une liste 
+        List<Subject> courses = new List<Subject>(); // inutile ??
+        public List<Subject> Courses
         {
             get
             {
@@ -56,7 +56,7 @@ namespace OOP_Project
         public Student(bool ctro)
         {
 
-        }
+        } // pourquoi ?
 
         public Student(string name2, string lastname2)
         {
@@ -124,7 +124,7 @@ namespace OOP_Project
             if (Tutor == false) tut = "0";
             else tut = "1";
             Data = ($"{name};{lastname};{mail};{StudentID};{birthDate};{Absences};{phone};{tut};{GradeLevel};{Workgroup};{UnpaidFees};{NbSubject}{GradesTemp}");
-        }
+        } // quand l'utilise t-on ? 
 
         public Student()
         {

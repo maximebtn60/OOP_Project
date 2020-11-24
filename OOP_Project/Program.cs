@@ -6,7 +6,12 @@ namespace OOP_Project
     {
             static void Main(string[] args)
             {
-                string end = "N";
+
+            Console.BackgroundColor = (ConsoleColor)15;
+            Console.Clear();
+            Console.ForegroundColor = (ConsoleColor)1;
+
+            string end = "N";
                 while (end == "N")
                 {
                     Console.WriteLine("WELCOME TO OUR COLLEGE GESTION SYSTEM");
