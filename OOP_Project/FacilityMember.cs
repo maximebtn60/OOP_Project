@@ -57,6 +57,9 @@ namespace OOP_Project
             set { value = classe; }
 
         }
+        public string Data { get; set; }
+        public string lAndC { get; set; }
+        public string sT { get; set; }
 
 
 
@@ -237,6 +240,87 @@ namespace OOP_Project
             DesignationOfLevelAndClass();
             Console.Clear();
 
+        }
+        public FacilityMember(string login3) : base()
+        {
+            StreamReader reader = new StreamReader(pathAccessibilityLevel); // declaration of the reader and the link of the file
+            string temp = " ";
+            while (temp != null)
+            {
+                temp = reader.ReadLine();
+                if (temp == null) break;
+                string[] columns = temp.Split(';');
+                if (columns[0] == login3)// comparison between the datas of the file and the data given by the user 
+                {
+                    password = columns[1];
+                }
+
+            }
+            reader.Close();// closing of the streamreader
+
+
+            for (int i = 0; i < 7; i++) disponibility[i] = new List<string>();
+            ReadDispo();
+            StreamReader readTeacher = new StreamReader(pathFacilityMember);
+            string temp2 = "";
+            while (temp2 != null)
+            {
+                temp2 = readTeacher.ReadLine();
+                if (temp2 == null) break;
+                string[] rTeacher = temp2.Split(';');
+                if (rTeacher[2] == login3)
+                {
+                    this.name = rTeacher[0];
+                    this.lastname = rTeacher[1];
+                    this.login = rTeacher[2];
+                    this.phone = rTeacher[3];
+                    string[] rTeacher2 = rTeacher[4].Split(',');
+                    // subjects taught
+                    for (int i = 0; i < rTeacher2.Length; i++)
+                    {
+                        SubjectTaught.Add((Subject)Convert.ToInt32(rTeacher2[i]));
+                        if (i == rTeacher2.Length - 1)
+                        {
+                            sT = sT + rTeacher2[i];
+                        }
+                        else sT = sT + rTeacher2[i] + ",";
+
+                    }
+                    Console.WriteLine(sT);
+
+                    // level and classes
+                    for (int j = 5; j < rTeacher.Length; j++)
+                    {
+                        LevelAndClasses level = new LevelAndClasses();
+                        string[] splitTab = rTeacher[j].Split(',');
+                        level.Level = (Convert.ToInt32(splitTab[0]));
+                        for (int k = 1; k < splitTab.Length; k++)
+                        {
+                            level.Classes.Add(Convert.ToInt32(splitTab[k]));
+                        }
+
+                        Levelandclasses.Add(level);
+                    }
+                    break;
+                }
+
+
+
+            }
+            readTeacher.Close();
+            lAndC = null;
+            for (int i = 0; i < levelandclasses.Count; i++)
+            {
+                lAndC = lAndC + levelandclasses[i].Level;
+                for (int j = 0; j < levelandclasses[i].Classes.Count; j++)
+                {
+                    lAndC = lAndC + "," + levelandclasses[i].Classes[j];
+                }
+                if (i != levelandclasses.Count - 1) lAndC = lAndC + ";";
+
+
+            }
+            Console.WriteLine(lAndC);
         }
 
         public void ExeFunctions()

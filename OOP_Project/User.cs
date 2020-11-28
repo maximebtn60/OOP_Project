@@ -13,6 +13,7 @@ namespace OOP_Project
         public string pathFacilityMember = ".//FacilityMember.txt";
         public string pathAdmin = ".//Admin.txt";
         public string PathDispo = ".//Disponibilities.txt";
+        public string pathTable = ".//TimeTable.txt";
 
 
         public abstract bool Login();
