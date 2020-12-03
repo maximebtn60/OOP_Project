@@ -345,7 +345,8 @@ namespace OOP_Project
                     "11. Display tutor information\n" +
                     "12. Mean of an exam\n" +
                     "13. Display the name of the students in the class\n" +
-                    "14. Disconnect\n");
+                    "14. Remove Grades\n" +
+                    "15. Disconnect\n");
 
                 int switchCase = Convert.ToInt32(Console.ReadLine());
                 switch (switchCase)
@@ -357,6 +358,7 @@ namespace OOP_Project
                         DisplayTutorList();
                         break;
                     case 3:
+                        DisplayStudentClass();
                         Console.WriteLine("First name of the student");
                         string fN = Console.ReadLine();
                         Console.WriteLine("Last name of the student");
@@ -373,6 +375,7 @@ namespace OOP_Project
                         AddExamAssignment();
                         break;
                     case 7:
+                        DisplayStudentClass();
                         GiveAbsenceToStudents();
                         break;
                     case 8:
@@ -386,6 +389,7 @@ namespace OOP_Project
                         DisplayDispo();
                         break;
                     case 11:
+                        DisplayTutorList();
                         Console.WriteLine("First name of the tutor");
                         fN = Console.ReadLine();
                         Console.WriteLine("Last name of the tutor");
@@ -400,6 +404,9 @@ namespace OOP_Project
                         DisplayStudentClass();
                         break;
                     case 14:
+                        RemoveResultsExam();
+                        break;
+                    case 15:
                         break;
                 }
                 Console.WriteLine();
@@ -418,8 +425,6 @@ namespace OOP_Project
         {
             if (Class.Count != 0)
             {
-                Console.WriteLine("Level: " + Class[0].Level);
-                Console.WriteLine("Class: " + Class[0].Class);
                 foreach (Student stud in Class)
                 {
                     Console.WriteLine(stud.name + " " + stud.lastname);
@@ -782,6 +787,137 @@ namespace OOP_Project
             AddGradesToStudentFile((Subject)exam.Sub);
         }
 
+        public void RemoveResultsExam()
+        {
+            string[] tabEnum = Enum.GetNames(typeof(Subject));
+            int Sub = 0;
+            //string coursesAvailable = null;
+            string[] test = Enum.GetNames(typeof(Subject));
+            /*
+            for (int index = 0; index < test.Length; index++)
+            {
+                coursesAvailable = (coursesAvailable + " " + test[index]);
+            }*/
+
+            Console.WriteLine("Enter the subject : " + SubjectsTaught());
+            string subjects = Console.ReadLine();
+            if (SubjectsTaught().Contains(subjects) == false)
+            {
+                while (SubjectsTaught().Contains(subjects) == false)
+                {
+                    Console.WriteLine("Please enter a correct subject : " + SubjectsTaught());
+                    subjects = Console.ReadLine();
+                }
+            }
+            int k = 0;
+            for (; k < tabEnum.Length; k++)
+            {
+                if (subjects == tabEnum[k])
+                {
+                    Sub = k;
+
+                    break;
+                }
+            }
+
+
+            Console.WriteLine("Enter the date of the exam : dd/mm/yyyy european date format");
+            string Date = Console.ReadLine();
+            bool check = false;
+            while (check == false)
+            {
+                check = true;
+                char[] tabAut = new char[] { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '/' };
+                bool num = false;
+                int checkSlash = 0;
+                for (int i = 0; i < Date.Length; i++)
+                {
+                    num = false;
+                    for (int j = 0; j < tabAut.Length; j++)
+                    {
+                        if (Date[i] == tabAut[j]) num = true;
+                    }
+                    if (Date[i] == '/') checkSlash++;
+                    if (num == false) check = false;
+
+                }
+                if (checkSlash != 2) check = false;
+
+                if (Date.Length > 5 && check == true)
+                {
+                    // add a zero if you don't put a zero before your number. ex: 1/1/2000 becomes 01/01/2000
+                    int decal = 0;
+                    string nDate = null;
+                    if (Date[2] != '/' || Date[5] != '/')
+                    {
+                        for (int i = 0; i < birthDate.Length; i++)
+                        {
+                            if (birthDate[i] == '/')
+                            {
+                                if (i == 1) nDate = "0";
+                                if (i == 3) nDate = nDate + birthDate[0] + "/" + "0" + birthDate[i - 1]; decal = 1;
+                                if (i == 2) nDate = nDate + birthDate[0] + birthDate[1] + birthDate[2] + "0"; i = 3; decal = 1;
+                                if (i == 1 && birthDate[4] == '/') nDate = "0" + birthDate[0]; decal = 1;
+                            }
+                            if (decal == 1) nDate = nDate + birthDate[i];
+                        }
+                        birthDate = nDate;
+                    }
+
+                    if (Date.Length != 10) check = false;
+                    if (Date[2] != '/') check = false;
+                    if (Date[5] != '/') check = false;
+                    if (check == true)
+                    {
+                        // check if the year, month and day are reasonable
+                        string[] tabDate = Date.Split('/');
+                        int day = Convert.ToInt32(tabDate[0]);
+                        int month = Convert.ToInt32(tabDate[1]);
+                        int year = Convert.ToInt32(tabDate[2]);
+
+                        if (year < 1901) check = false;
+                        if (year > DateTime.Today.Year) check = false;
+
+                        if (month < 1 || month > 12) check = false;
+
+                        if (check == true)
+                        {
+                            int[] daysInMonth = new int[] { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
+                            int[] daysInMonthBissextile = new int[] { 31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
+                            bool biss = DateTime.IsLeapYear(year);
+                            if (biss == true) if (day < 1 || day > daysInMonthBissextile[month - 1]) check = false;
+                                else if (day < 1 || day > daysInMonth[month - 1]) check = false;
+                        }
+                    }
+                }
+                else check = false;
+                if (check == false)
+                {
+                    Console.WriteLine("The exam date has an input error. ");
+                    Console.WriteLine("Exam date ? dd/mm/yyyy");
+                    Date = Console.ReadLine();
+                }
+            }
+
+
+            for (int j = 0; j < Class.Count; j++)
+            {
+                if (CheckCourses((Subject)k, Class[j]) == true)
+                {
+                    for (int l = 0; l < Class[j].Grades.Count; l++)
+                    {
+                        if (Class[j].Grades[l].Date == Date && Class[j].Grades[l].Sub == Sub)
+                        {
+                            Class[j].Grades.RemoveAt(l);
+                        }
+                    }
+                }
+            }
+
+            AddGradesToStudentFile((Subject)Sub);
+        }
+
+
         public void AddGradesToStudentFile(Subject sub)//modify the student list, need to be used after AddResultsExam()
         {
             List<Student> listStudent = new List<Student>();// list of the students who have grades added
@@ -798,75 +934,68 @@ namespace OOP_Project
 
                     string grades = null;
                     // 2 cases: the student has 1 exam in his tab or he has more than one
-                    if (tabExam.Length == 1)
+                    if (tabExam.Length == 0)
+                    {
+                        for (int j = 0; j < Class[i].Courses.Count; j++)
+                        {
+                            if (j != Class[i].Courses.Count - 1)
+                            {
+                                grades = grades + Class[i].Courses[j].GetHashCode() + ";";
+                            }
+                            else grades = grades + Class[i].Courses[j].GetHashCode();
+                        }
+                    }
+                    else if (tabExam.Length == 1)
                     {
                         //grades = Convert.ToString(tabExam[0].Sub);
-                        grades = grades + tabExam[0].ToString();
-                        for (int j = 0; j < Class[i].Courses.Count; j++)// add the number of the course that hasn't been modified
+                        grades = grades +";"+ tabExam[0].ToString();
+                        for (int j = 0; j < Class[i].Courses.Count; j++)
                         {
                             if (Class[i].Courses[j] != (Subject)tabExam[0].Sub)
                             {
-
-                                string[] tabEnum = Enum.GetNames(typeof(Subject));// tabEnum contains all the data that can be found in the enum class but under the form of a string
-                                for (int k = 0; k < tabEnum.Length; k++)
+                                if (j != Class[i].Courses.Count - 1)
                                 {
-                                    if (Class[i].Courses[j] == (Subject)k)
-                                    {
-                                        grades = grades + ";" + k;
-                                        break;
-                                    }
+                                    grades = grades + Class[i].Courses[j].GetHashCode() + ";";
                                 }
-
+                                else grades = grades + Class[i].Courses[j].GetHashCode();
                             }
                         }
                     }
                     else
                     {
                         grades = tabExam[0].ToString();
+                        if (tabExam[0].Sub == tabExam[1].Sub) grades = grades + ",";
+                        else grades = grades + ";";
                         for (int k = 1; k < tabExam.Length - 1; k++)
                         {
                             // 2 possibilities: the exam is in the same subject than the next exam in the tabExam or it is not.
-                            if (tabExam[k].Sub == tabExam[k + 1].Sub) grades = grades + "," + tabExam[k].ToString();
-                            else grades = grades + "," + tabExam[k].ToString() + ";";
+                            if (tabExam[k].Sub == tabExam[k + 1].Sub) grades = grades + tabExam[k].ToString() + ",";
+                            else grades = grades + tabExam[k].ToString() + ";";
 
                         }
-                        if (tabExam[tabExam.Length - 2].Sub == tabExam[tabExam.Length - 1].Sub) grades = grades + "," + tabExam[tabExam.Length - 1].ToString();
-                        else grades = grades + tabExam[tabExam.Length - 1].ToString();
+                        grades = grades + tabExam[tabExam.Length - 1].ToString();
 
-
+                        // add courses that hace not been used yet
                         List<int> save = new List<int>();
-                        for (int j = 0; j < Class[i].Courses.Count; j++)
+                        for (int k = 0; k < tabExam.Length - 1; k++)
                         {
-                            bool check2 = true;
-                            for (int l = 0; l < tabExam.Length; l++)
+                            if (k == 0)
                             {
-                                if (Class[i].Courses[j] == (Subject)tabExam[l].Sub) check2 = false;
+                                save.Add(tabExam[0].Sub);
                             }
-                            if (check2 == true)
+                            if (tabExam[k].Sub != tabExam[k + 1].Sub)
                             {
-                                string[] tabEnum = Enum.GetNames(typeof(Subject));
-                                for (int k = 0; k < tabEnum.Length; k++)
-                                {
-                                    if (Class[i].Courses[j] == (Subject)k)
-                                    {
-                                        if (save.Count == 0)
-                                        {
-                                            save.Add(k);
-                                            grades = grades + ";" + k;
-                                            break;
-                                        }
-                                        else
-                                        {
-                                            bool check = true;
-                                            for (int m = 0; m < save.Count; m++)
-                                            {
-                                                if (k == save[m]) check = false;
-                                            }
-                                            if (check == true) grades = grades + ";" + k;
-                                        }
-                                    }
-                                }
+                                save.Add(tabExam[k + 1].Sub);
                             }
+                        }
+                        for (int k = 0; k < Class[i].Courses.Count; k++)
+                        {
+                            int compteur = 0;
+                            for (int l = 0; l < save.Count; l++)
+                            {
+                                if (Class[i].Courses[k] == (Subject)save[l]) compteur++;
+                            }
+                            if (compteur == 0) grades = grades + ";" + Class[i].Courses[k].GetHashCode();
                         }
                     }
                     string tutor = null;
@@ -924,6 +1053,7 @@ namespace OOP_Project
                 }
             }
             stream.Dispose();
+
         }
 
         public static void Sort(Exam[] tab)// sort from the min to the the max
@@ -1010,11 +1140,6 @@ namespace OOP_Project
             }
             if (test == false) Console.WriteLine("the student has not been found");
 
-        }
-
-        private void GiveHomework()//to do
-        {
-            //lorsqu'on aura décidé d'une plateforme pour mettre les devoirs
         }
 
         public void EditStudents()

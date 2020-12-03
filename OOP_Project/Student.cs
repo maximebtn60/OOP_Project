@@ -207,7 +207,7 @@ namespace OOP_Project
             if (Tutor == false) tut = "0";
             else tut = "1";
             Data = ($"{name};{lastname};{mail};{StudentID};{birthDate};{Absences};{phone};{tut};{GradeLevel};{Workgroup};{UnpaidFees};{NbSubject}{GradesTemp}");
-            TimeTable = new string[4, 5];
+            TimeTable = new string[5, 4];
             StreamReader readTable = new StreamReader(pathTable);       //extract timeTable
             string temp2 = "";
             while (temp2 != null)
@@ -216,11 +216,12 @@ namespace OOP_Project
                 if (temp2 == null) break;
                 if (Convert.ToInt32(temp2.Split(';')[0].Split(',')[0]) == GradeLevel & Convert.ToInt32(temp2.Split(';')[0].Split(',')[1]) == Workgroup)
                 {
-                    for (int i = 0; i < 4; i++)
+                    for (int i = 0; i < 5; i++)
                     {
-                        for (int j = 0; j < 5; j++)
+                        for (int j = 0; j < 4; j++)
                         {
                             TimeTable[i, j] = temp2.Split(';')[i + 1].Split(',')[j];
+                            if (TimeTable[i, j] == "") TimeTable[i, j] = null;
                         }
                     }
                     break;
@@ -329,7 +330,8 @@ namespace OOP_Project
                     "6. Display personal informations\n" +
                     "7. Display grades\n" +
                     "8. Display TimeTable\n" +
-                    "9. Disconnect\n");
+                    "9. Display Courses\n" +
+                    "10. Disconnect\n");
 
                 int switchCase = Convert.ToInt32(Console.ReadLine());
                 switch (switchCase)
@@ -362,6 +364,9 @@ namespace OOP_Project
                         DisplayTimeTable();
                         break;
                     case 9:
+                        DisplayCourses();
+                        break;
+                    case 10:
                         Environment.Exit(0);
                         break;
 
@@ -396,7 +401,7 @@ namespace OOP_Project
         }
 
         public void DisplayFees()
-        { Console.WriteLine($"The student still have to pay {UnpaidFees}"); }
+        { Console.WriteLine($"The student still have to pay {UnpaidFees} €"); }
 
         public void DisplayAbsence()
         { Console.WriteLine($"The student did not attend {Absences} classes"); }
@@ -419,13 +424,13 @@ namespace OOP_Project
             string h3 = "  15:00-16:30  ";
             string[] h = { h0, h1, h2, h3 };
             Console.WriteLine("               |french         |history        |english        |maths          |litterature    |");
-            for (int i = 0; i < TimeTable.GetLength(0); i++)
+            for (int i = 0; i < TimeTable.GetLength(1); i++)
             {
                 Console.WriteLine("__");
                 Console.Write(h[i]);
-                for (int j = 0; j < TimeTable.GetLength(1); j++)
+                for (int j = 0; j < TimeTable.GetLength(0); j++)
                 {
-                    if (TimeTable[i, j] != null) Console.Write("|" + TimeTable[i, j]);
+                    if (TimeTable[j, i] != null) Console.Write("|" + TimeTable[j, i]);
                     else Console.Write(filler);
                 }
                 Console.WriteLine();
@@ -564,7 +569,6 @@ namespace OOP_Project
                 if (comparison[2] == mail)
                 {
                     tab.Add(Data);
-                    Console.WriteLine("passe");
                 }
                 else tab.Add(temp);
 
