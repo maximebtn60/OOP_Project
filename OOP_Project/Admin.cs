@@ -810,6 +810,8 @@ namespace OOP_Project
 
             Registration.WriteData(pathFacilityMember, sumData);//add the admin data in the admin file
             Registration.WriteData(pathAccessibilityLevel, sumAccessData);//add the admin in the accessibility file
+            Registration.WriteData(PathDispo, name2 + ";" + forename2 + ";;;;;");
+
         }
 
         public void AddStudent()
