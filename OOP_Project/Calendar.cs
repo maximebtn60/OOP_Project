@@ -88,5 +88,64 @@ namespace OOP_Project
 
             reader.Close();
         }
+        /// <summary>
+        /// Delete an exam/assignment of the assignment file
+        /// </summary>
+        /// <param name="level"></param> level of the class of student
+        /// <param name="classe"></param> number of a class of student
+        public static void DeleteExamAssignment(int level, int classe)
+        {
+            ReadExamAssignment(classe, level);
+            Console.WriteLine("Enter the date of the exam/assignment you want to delete");
+            string date = Console.ReadLine();
+            string[] tabEnum = Enum.GetNames(typeof(Subject));
+            string coursesAvailable = null;
+            string[] test = Enum.GetNames(typeof(Subject));
+            for (int index = 0; index < test.Length; index++)
+            {
+                coursesAvailable = (coursesAvailable + " " + test[index]);
+            }
+
+            Console.WriteLine("Enter the subject of the exam/assignment you want to delete: " + coursesAvailable);
+            string subject = Console.ReadLine();
+
+            StreamReader reader = new StreamReader(".//AssignmentsExams.txt"); // declaration of the reader and the link of the file
+            string temp = " ";
+            List<string> tab = new List<string>();   // we create a list so we can temporarily keep the information of the reading
+            string subjectTemp = null;
+            while (temp != null) //We need to indicate an end to the reading 
+            {
+
+                temp = reader.ReadLine();
+                if (temp == null) break;
+                if (temp.Split(';').Length == 1)
+                {
+                    subjectTemp = temp;
+                    Console.WriteLine(subjectTemp);
+                    tab.Add(temp);
+                }
+                if (temp.Split(';').Length > 1)
+                {
+                    Console.WriteLine(temp.Split(';')[1] + " " + date + "?" + subjectTemp + "/" + subject);
+                    if (temp.Split(';')[1] == date && subjectTemp == subject) { Console.WriteLine("passe"); }
+                    else tab.Add(temp);
+                }
+
+            }
+
+            reader.Close();
+            FileStream stream = new FileStream(".//AssignmentsExams.txt", FileMode.OpenOrCreate);
+            using (StreamWriter writer = new StreamWriter(stream))
+            {
+
+                //keep all the data already present
+                for (int i = 0; i < tab.Count; i++)
+                {
+                    writer.WriteLine(tab[i]);
+                }
+
+            }
+            stream.Close();
+        }
     }
 }

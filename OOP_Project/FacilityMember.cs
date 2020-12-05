@@ -348,7 +348,8 @@ namespace OOP_Project
                     "12. Mean of an exam\n" +
                     "13. Display the name of the students in the class\n" +
                     "14. Remove Grades\n" +
-                    "15. Disconnect\n");
+                    "15. Delate Exam\n"+
+                    "16. Disconnect\n");
 
                 int switchCase = Convert.ToInt32(Console.ReadLine());
                 switch (switchCase)
@@ -409,6 +410,9 @@ namespace OOP_Project
                         RemoveResultsExam();
                         break;
                     case 15:
+                        Calendar.DeleteExamAssignment(level2,class2);
+                        break;
+                    case 16:
                         Console.Clear();
                         Environment.Exit(0);
                         break;
