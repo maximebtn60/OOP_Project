@@ -22,6 +22,8 @@ namespace OOP_Project
             while (Login() == false)
             {
                 if (Login() == true) break;
+                Console.Clear();
+                Console.WriteLine("Wrong Login or Password, try again.");
                 Console.WriteLine("Login ?");
                 login = Console.ReadLine();
                 Console.WriteLine("Password ?");
@@ -173,6 +175,10 @@ namespace OOP_Project
                         break;
                     case 9:
                         WriteTimeTable();
+                        break;
+                    case 10:
+                        Console.Clear();
+                        Environment.Exit(0);
                         break;
                     default:
                         break;

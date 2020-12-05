@@ -29,7 +29,7 @@ namespace OOP_Project
 
 
 
-        List<Subject> courses = new List<Subject>(); 
+        List<Subject> courses = new List<Subject>();
         public List<Subject> Courses
         {
             get
@@ -58,7 +58,7 @@ namespace OOP_Project
         public Student(bool ctro)
         {
 
-        } 
+        }
 
         public Student(string name2, string lastname2)
         {
@@ -126,7 +126,7 @@ namespace OOP_Project
             if (Tutor == false) tut = "0";
             else tut = "1";
             Data = ($"{name};{lastname};{mail};{StudentID};{birthDate};{Absences};{phone};{tut};{GradeLevel};{Workgroup};{UnpaidFees};{NbSubject}{GradesTemp}");
-        } 
+        }
 
         public Student()
         {
@@ -137,6 +137,8 @@ namespace OOP_Project
             while (Login() == false)
             {
                 if (Login() == true) break;
+                Console.Clear();
+                Console.WriteLine("Wrong Login or Password, try again.");
                 Console.WriteLine("Login ?");
                 login = Console.ReadLine();
                 Console.WriteLine("Password ?");
@@ -220,8 +222,8 @@ namespace OOP_Project
                     {
                         for (int j = 0; j < 4; j++)
                         {
-                            TimeTable[i, j] = temp2.Split(';')[i + 1].Split(',')[j];
-                            if (TimeTable[i, j] == "") TimeTable[i, j] = null;
+                            if (temp2.Split(';')[i + 1].Split(',')[j] == "") TimeTable[i, j] = null;
+                            else TimeTable[i, j] = temp2.Split(';')[i + 1].Split(',')[j];
                         }
                     }
                     break;
@@ -367,18 +369,25 @@ namespace OOP_Project
                         DisplayCourses();
                         break;
                     case 10:
+                        Console.Clear();
                         Environment.Exit(0);
                         break;
 
                     default:
                         break;
                 }
+                Console.WriteLine();
+                Console.WriteLine("Do you want to disconnect? if yes, enter Y else enter N");
+                carryOn = Console.ReadLine();
+                while (carryOn != "Y" && carryOn != "N")
+                {
+                    Console.WriteLine("Do you want to disconnect? if yes, enter Y else enter N");
+                    carryOn = Console.ReadLine();
+                }
+                Console.Clear();
 
 
-
-            } while (carryOn != "8");
-            Console.ReadKey();
-            Console.Clear();
+            } while (carryOn != "10");
 
 
 
@@ -423,15 +432,30 @@ namespace OOP_Project
             string h2 = "  13:30-15:00  ";
             string h3 = "  15:00-16:30  ";
             string[] h = { h0, h1, h2, h3 };
-            Console.WriteLine("               |french         |history        |english        |maths          |litterature    |");
+            Console.ForegroundColor = ConsoleColor.Black;
+            Console.WriteLine("               |  Monday       |  Tuesday      |  Wednesday    |  Thursday     |  Friday       ");
+            Console.ForegroundColor = ConsoleColor.DarkBlue;
             for (int i = 0; i < TimeTable.GetLength(1); i++)
             {
-                Console.WriteLine("__");
+                Console.ForegroundColor = ConsoleColor.Black;
+                Console.WriteLine("________________________________________________________________________________________________");
                 Console.Write(h[i]);
+                Console.ForegroundColor = ConsoleColor.DarkBlue;
                 for (int j = 0; j < TimeTable.GetLength(0); j++)
                 {
-                    if (TimeTable[j, i] != null) Console.Write("|" + TimeTable[j, i]);
-                    else Console.Write(filler);
+                    if (TimeTable[j, i] != null)
+                    {
+                        Console.ForegroundColor = ConsoleColor.Black;
+                        Console.Write("|");
+                        Console.ForegroundColor = ConsoleColor.DarkBlue;
+                        Console.Write(TimeTable[j, i]);
+                    }
+                    else
+                    {
+                        Console.ForegroundColor = ConsoleColor.Black;
+                        Console.Write(filler);
+                        Console.ForegroundColor = ConsoleColor.DarkBlue;
+                    }
                 }
                 Console.WriteLine();
             }

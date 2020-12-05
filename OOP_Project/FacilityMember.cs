@@ -114,6 +114,8 @@ namespace OOP_Project
             while (Login() == false)
             {
                 if (Login() == true) break;
+                Console.Clear();
+                Console.WriteLine("Wrong Login or Password, try again.");
                 Console.WriteLine("Login ?");
                 login = Console.ReadLine();
                 Console.WriteLine("Password ?");
@@ -407,6 +409,10 @@ namespace OOP_Project
                         RemoveResultsExam();
                         break;
                     case 15:
+                        Console.Clear();
+                        Environment.Exit(0);
+                        break;
+                    default:
                         break;
                 }
                 Console.WriteLine();
@@ -948,7 +954,7 @@ namespace OOP_Project
                     else if (tabExam.Length == 1)
                     {
                         //grades = Convert.ToString(tabExam[0].Sub);
-                        grades = grades +";"+ tabExam[0].ToString();
+                        grades = grades + tabExam[0].ToString() + ";";
                         for (int j = 0; j < Class[i].Courses.Count; j++)
                         {
                             if (Class[i].Courses[j] != (Subject)tabExam[0].Sub)
