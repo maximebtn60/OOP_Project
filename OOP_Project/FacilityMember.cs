@@ -62,9 +62,13 @@ namespace OOP_Project
         public string sT { get; set; }
 
 
-
-        // return true if the login and password are the good ones and also if the category(facilityMember) is true
-        public override bool Login() //complete 
+        /// <summary>
+        /// The method declare the reader and the link to the file. Then, it
+        /// makes a comparison between the data of the file and the data given by the user.
+        /// At the end of the method, the streamreader is closed.
+        /// </summary>
+        /// <returns>true if the login and password are the good ones and also if the category(facilityMember) is true</returns>
+        public override bool Login() 
         {
             bool access = false;
             StreamReader reader = new StreamReader(pathAccessibilityLevel); // declaration of the reader and the link of the file
@@ -84,7 +88,10 @@ namespace OOP_Project
             return access;
         }
 
-        // extract student data from the database (student file) 
+        /// <summary>
+        /// It extracts student data from the database (student file) and when it
+        /// is done, the  streamreader is closed.
+        /// </summary>
         public override void ExtractData() // à terminer lorsque le fichier student aura été créé
         {
             StreamReader reader = new StreamReader(pathFacilityMember);
@@ -325,6 +332,9 @@ namespace OOP_Project
             Console.WriteLine(lAndC);
         }
 
+        /// <summary>
+        /// The method that show the menu displayed on the temrinal.
+        /// </summary>
         public void ExeFunctions()
         {
             string carryOn = "N";
@@ -431,6 +441,10 @@ namespace OOP_Project
             }
         }
 
+        /// <summary>
+        /// It displays the level and the class of the student if there are students
+        /// in the class.
+        /// </summary>
         private void DisplayStudentClass()
         {
             if (Class.Count != 0)
@@ -447,6 +461,9 @@ namespace OOP_Project
 
         }
 
+        /// <summary>
+        /// It displays all the informations about one person.
+        /// </summary>
         public void DisplayPersonalInfos()
         {
 
@@ -457,6 +474,11 @@ namespace OOP_Project
                 $"subject(s) taught: {SubjectsTaught()}\n ");
         }
 
+        /// <summary>
+        /// The method scrolls through the list and then converts each element in
+        /// string in order to have all the subjects in string on the variable 'sub'
+        /// </summary>
+        /// <returns>the names in string of all the subjects taught</returns>
         public string SubjectsTaught()
         {
             string sub = null;
@@ -467,6 +489,12 @@ namespace OOP_Project
             return sub;
         }
 
+        /// <summary>
+        /// The method scrolls through the list of subjectTaught and displays each
+        /// one in the terminal in order to let choose the subject by the user. The
+        /// user is asked to enter the date also. Then, it scrolls through the list
+        /// Class in order to calculate the mean.
+        /// </summary>
         public void MeanExam()
         {
 
@@ -501,6 +529,11 @@ namespace OOP_Project
 
         }
 
+        /// <summary>
+        /// First, the method displays all the levels and classes for each level in
+        /// order to ask the user the choice of the class and the level to modify.
+        /// Then, the student is placed in the class and level choosen.
+        /// </summary>
         private void DesignationOfLevelAndClass()
         {
             Class = new List<Student>();
@@ -539,6 +572,9 @@ namespace OOP_Project
             }
         }
 
+        /// <summary>
+        /// It displays if there is a tutor in the class or not.
+        /// </summary>
         private void DisplayTutorList()
         {
             bool test = true;
@@ -550,6 +586,11 @@ namespace OOP_Project
             Console.WriteLine();
         }
 
+        /// <summary>
+        /// It displays if the choosen student is a tutor or not.
+        /// </summary>
+        /// <param name="firstName">first name of the student</param>
+        /// <param name="lastName">last name of the student</param>
         private void DisplayTutorInfo(string firstName, string lastName)
         {
             foreach (Student student in Class)
@@ -559,6 +600,12 @@ namespace OOP_Project
             }
         }
 
+        /// <summary>
+        /// It displays if a student has been absent and how many times he has been
+        /// absent.
+        /// </summary>
+        /// <param name="name">name of the student</param>
+        /// <param name="lastName">last name of the student</param>
         private void DisplayAttendancePerStudent(string name, string lastName)
         {
             foreach (Student stud in Class)
@@ -572,6 +619,10 @@ namespace OOP_Project
 
         }
 
+        /// <summary>
+        /// It displays all the grades and informations about them of each student
+        /// in the class.
+        /// </summary>
         private void DisplayStudentResults()
         {
             foreach (Student stud in Class)
@@ -588,6 +639,9 @@ namespace OOP_Project
 
         }
 
+        /// <summary>
+        /// It displays all the exams for each class for each level.
+        /// </summary>
         public void DisplayExams()
         {
             for (int i = 0; i < Levelandclasses.Count; i++)
@@ -603,6 +657,10 @@ namespace OOP_Project
             }
         }
 
+        /// <summary>
+        /// The method asks the user the choice of the subject, the exact date of
+        /// when the exam will be and its description to add it in to the calendar.
+        /// </summary>
         public void AddExamAssignment()
         {
             string[] EnumTab = Enum.GetNames(typeof(Subject));
@@ -635,6 +693,16 @@ namespace OOP_Project
             return admin.ToString();
         }
 
+        /// <summary>
+        /// First, the user has to choose the subject of the exam (he is asked
+        /// while he enters a wrong one), he has to enter the coefficient of the
+        /// exam (he is asked while the coefficient is not correct), he has to
+        /// enter the date which is tested if it is in the correct format and
+        /// reasonable. Then, the methods scrolls through the list class to ask
+        /// the user to enter the grade for each student of the class (the grade
+        /// is tested if it is in the correct format).
+        /// At least, grades are aded to the student file.
+        /// </summary>
         public void AddResultsExam()
         {
 
@@ -927,7 +995,25 @@ namespace OOP_Project
             AddGradesToStudentFile((Subject)Sub);
         }
 
-
+        /// <summary>
+        /// The method modifies the student list and is used in 'AddResultsExam()'.
+        /// First, the list of the students who have grades added is initialized.
+        /// The method scrolls through the list Class in order to add in the tab
+        /// tabexam all the exam for each student and then, sort the tab. Here are
+        /// 2 cases: the student has one exam in his tab or he has more than one.
+        /// First case: the method adds the number of the course that hasn't been
+        /// modified and tabEnum contains all the data that can be found in the
+        /// enum class but under the form of a string.
+        /// Second case: there are 2 possibilities: the exam is in the same subject
+        /// than the next exam in the tabExam or not.
+        /// Then, there is the modification of the personal data. The method reads
+        /// all the student file and adds the data of the student who are not in
+        /// the workgroup chosen in the constructor. After the streamreader is
+        /// closed, the method adds all the students who are in the same workgroup
+        /// but who have not the subject.
+        /// Then, the file student is deleted.
+        /// </summary>
+        /// <param name="sub"></param>
         public void AddGradesToStudentFile(Subject sub)//modify the student list, need to be used after AddResultsExam()
         {
             List<Student> listStudent = new List<Student>();// list of the students who have grades added
@@ -1068,6 +1154,10 @@ namespace OOP_Project
 
         }
 
+        /// <summary>
+        /// It sorts a choosen array from the minimum to the maximum.
+        /// </summary>
+        /// <param name="tab">the array to sort</param>
         public static void Sort(Exam[] tab)// sort from the min to the the max
         {
             for (int i = 0; i < tab.Length - 1; i++)
@@ -1086,6 +1176,12 @@ namespace OOP_Project
 
         }
 
+        /// <summary>
+        /// It swaps to element in an array.
+        /// </summary>
+        /// <param name="tab">the array where elements have to be swapped</param>
+        /// <param name="first">first element to swap</param>
+        /// <param name="second">second element to swap</param>
         private static void Swap(Exam[] tab, int first, int second)
         {
             Exam temp = tab[first];
@@ -1093,6 +1189,12 @@ namespace OOP_Project
             tab[second] = temp;
         }
 
+        /// <summary>
+        /// It checks if the student has a choosen course in his course list or not.
+        /// </summary>
+        /// <param name="subject">the subject to test</param>
+        /// <param name="student">the student with his course list</param>
+        /// <returns></returns>
         public bool CheckCourses(Subject subject, Student student)// check if a student has this course in his course list
         {
             bool check = false;
@@ -1106,6 +1208,11 @@ namespace OOP_Project
             return check;
         }
 
+        /// <summary>
+        /// The method asks the user the name of the absent student in order to
+        /// add an absence to this student. There is a test of if the student is
+        /// in the class.
+        /// </summary>
         private void GiveAbsenceToStudents()
         {
             Console.WriteLine("who is absent ? ");
@@ -1127,6 +1234,11 @@ namespace OOP_Project
             if (test == false) Console.WriteLine("the student has not been found");
         }
 
+        /// <summary>
+        /// The method asks user name of the student and the number of absences
+        /// he wants to take off absences. There is a test of if the student is
+        /// in the class.
+        /// </summary>
         private void TakeOffAbsences()
         {
 
@@ -1154,6 +1266,9 @@ namespace OOP_Project
 
         }
 
+        /// <summary>
+        /// It edits every informations about each student of the class.
+        /// </summary>
         public void EditStudents()
         {
             string line = "";
@@ -1192,6 +1307,16 @@ namespace OOP_Project
             return disponibility;
         }
 
+        /// <summary>
+        /// It displays a menu in order to ask the user his disponibility of day
+        /// and time. The time slot entered by the user is tested in order to have
+        /// a correct format. Then, the method adds the time slot at the correct
+        /// position. There are 3 cases, when the time slot is already entered (so
+        /// the time slot is not filled), when the time entered is before another
+        /// (the time slot is filled) and when everything is alright (the time
+        /// slot is filled). Finally, it asks the user his choice about adding
+        /// another disponibility on the same day or on another day.
+        /// </summary>
         public void AddDispo()
         {
             string test = "yes";
@@ -1276,6 +1401,14 @@ namespace OOP_Project
             }
         }
 
+        /// <summary>
+        /// It displays a menu in order to ask the user his disponibility he wants
+        /// to remove. The user is asked about the day and the time slot he wants
+        /// to remove. The time slot is tested, if it exists it is removed, else
+        /// it displays that this disponibility does not exist. Finally, it asks
+        /// the user his choice about removing another disponibility on the same
+        /// day or on another day.
+        /// </summary>
         public void RemoveDispo()
         {
             string test = "";
@@ -1317,6 +1450,9 @@ namespace OOP_Project
             }
         }
 
+        /// <summary>
+        /// It displays the disponibility.
+        /// </summary>
         public void DisplayDispo()
         {
             string days = "Monday          Tuesday         Wednesday       Thursday        Friday";
@@ -1338,6 +1474,9 @@ namespace OOP_Project
             }
         }
 
+        /// <summary>
+        /// The method write the disponibility in the file.
+        /// </summary>
         public void WriteDispo()
         {
             string disponibilities = name + ";" + lastname;
@@ -1392,6 +1531,10 @@ namespace OOP_Project
             stream.Dispose();
         }
 
+        /// <summary>
+        /// It displays a menu in order to ask the user if he would likes to add
+        /// or remove disponibilities.
+        /// </summary>
         public void EditDispo()
         {
             disponibility = ReadDispo();
