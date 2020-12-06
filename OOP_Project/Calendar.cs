@@ -26,6 +26,14 @@ namespace OOP_Project
             stream.Close();
         }
 
+        /// <summary>
+        /// adds a new exam assignment to the time table
+        /// </summary>
+        /// <param name="Subject"></param>
+        /// <param name="Date"></param>
+        /// <param name="ExamAssignment"></param>
+        /// <param name="Classe"></param>
+        /// <param name="Niveau"></param>
         public static void AddExamAssignment(string Subject, DateTime Date, String ExamAssignment, int Classe, int Niveau) // Modify to be able to choose the Class of student 
         {
 
