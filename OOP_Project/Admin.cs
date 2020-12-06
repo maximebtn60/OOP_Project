@@ -13,6 +13,9 @@ namespace OOP_Project
         public string birthDate { get; set; }//not implemented in admin class
         public string Data { get; set; }
 
+        /// <summary>
+        /// verifies if the login informations are right
+        /// </summary>
         public Admin()
         {
             Console.WriteLine("Login ?");
@@ -48,6 +51,9 @@ namespace OOP_Project
             readAdmin.Close();
         }
 
+        /// <summary>
+        /// extracting data
+        /// </summary>
         public override void ExtractData()
         {
             StreamReader reader = new StreamReader(pathFacilityMember);
@@ -68,7 +74,10 @@ namespace OOP_Project
             reader.Close();// closing of the streamreader
 
         }
-
+        
+        /// <summary>
+        /// return  true if the identificaton is positive, return false if the identification is negative
+        /// </summary>
         public override bool Login()//return  true if the identificaton is positive, return false if the identification is negative
         {
             bool access = false;
@@ -125,6 +134,10 @@ namespace OOP_Project
             readAdmin.Close();
             Data = ($"{name};{lastname};{mail};{phone}");
         }
+        
+        /// <summary>
+        /// menu to excecute different actions
+        /// </summary>
         public void ExeFunctions()
         {
             string carryOn = "N";
@@ -692,6 +705,10 @@ namespace OOP_Project
             }
             stream.Dispose();
         }
+        
+        /// <summary>
+        /// To add a new admin into the system
+        /// </summary>
         public void AddAdmin()
         {
             Console.WriteLine("Name ?");
@@ -711,7 +728,10 @@ namespace OOP_Project
             Registration.WriteData(pathAdmin, sumData);//add the admin data in the admin file
             Registration.WriteData(pathAccessibilityLevel, sumAccessData);//add the admin in the accessibility file
         }
-
+        
+        /// <summary>
+        /// add someone and all the informations about him
+        /// </summary>
         public void AddFacilityMember()
         {
             Console.WriteLine("First Name ?");
@@ -826,7 +846,10 @@ namespace OOP_Project
             Registration student = new Registration(admin);
         }
 
-        public void Delete(string login2)//delete admin, student or facility Member
+        /// <summary>
+         /// delete admin, student or facility Member
+         /// </summary>
+        public void Delete(string login2)
         {
             string accessLevel = null;
             string path = null;
