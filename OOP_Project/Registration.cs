@@ -79,6 +79,21 @@ namespace OOP_Project
 
         }
 
+        /// <summary>
+        /// The method uses 'CompletePersonalInfos()' in order to ask the user
+        /// first name, last name, phone number and birth date and checks if the
+        /// entered informations are correct. Then, it uses 'ChooseLoginAndPassword()'
+        /// to ask the user login and password and checks if there are correct.
+        /// After, it uses 'LevelofClass()' and 'ChooseCourses()' to ask him
+        /// about his level and the courses he chooses. At least, it uses 'Fees()'
+        /// and 'StudentID()' to ask him if he wants to pay the fees right now and
+        /// the method creates the student number associated to the user. If the
+        /// user accept that all his informations are correct when the method
+        /// displays them, it uses the other methods of the class to convert the
+        /// data in to string and to finally write it in the student file in the
+        /// data base.
+        /// </summary>
+        /// <param name="admin"></param>
         public Registration(bool admin)
         {
             if (admin == true)
@@ -115,7 +130,10 @@ namespace OOP_Project
             }
         }
 
-
+        /// <summary>
+        /// The method 'convert' the enum of subject in to string.
+        /// </summary>
+        /// <returns>the course in string</returns>
         public string CoursesToString()
         {
             string sCourses = null;
@@ -135,7 +153,14 @@ namespace OOP_Project
             return sCourses;
         }
 
-        //Add data to the student file in the data base
+        /// <summary>
+        /// It adds data to the student file in the data base. First, the method
+        /// get all the data already present on the file student, and then close
+        /// the file. Then, it adds all the data and the data of the new student
+        /// while keeping all the data already present.
+        /// </summary>
+        /// <param name="path">the file to complete</param>
+        /// <param name="data">the data to add</param>
         public static void WriteData(string path, string data) //path: choose the file you want to complete, data: add the data you want to add
         {
             //get all the datas already present on the file student
@@ -163,6 +188,11 @@ namespace OOP_Project
             }
         }
 
+        /// <summary>
+        /// The method asks the user the number of courses he wants to take and
+        /// what courses. There is a test when a course is enter to check if the
+        /// course is not choosen twice or wrongly spelled.
+        /// </summary>
         public void ChooseCourses()
         {
             string[] test = Enum.GetNames(typeof(Subject));
@@ -233,6 +263,12 @@ namespace OOP_Project
 
         }
 
+        /// <summary>
+        /// The method asks user about login and password. It checks if the login
+        /// is an email adress and the password choosen has to be at least of 8
+        /// characters. Then, it displays the login and choosen password and asks
+        /// if the user agrees, if not the method does it all over.
+        /// </summary>
         public void ChooseLoginAndPassword()
         {
             string agreement = "N";
@@ -283,12 +319,25 @@ namespace OOP_Project
 
 
         }
-
+        /// <summary>
+        /// It calculates the unpaid fees which is the number of courses * the cost
+        /// of the courses.
+        /// </summary>
         public void Fees() // number of courses * cost of the courses
         {
             UnpaidFees = courses.Count * priceCourses;
         }
 
+        /// <summary>
+        /// The method asks the user all his informations: first name, last name,
+        /// phone number and birth date. It checks if first name and last name are
+        /// string variable using a tab of characters for the alphabet. For the
+        /// phone number, it checks if it is only number and +, using again a tab
+        /// of characters for the number between 0 and  9. At least, it checks if
+        /// the year, month and day of the  birth date are reasonable.
+        /// Finally, the method displays all the informations and asks the user
+        /// if it is correct. If the user is not agree the method does it all over.
+        /// </summary>
         public void CompletePersonalInfos()
         {
             string agreement = "N";
@@ -480,6 +529,9 @@ namespace OOP_Project
 
         }
 
+        /// <summary>
+        /// The method asks the user about the level of class he wants to be.
+        /// </summary>
         public void LevelofClass()
         {
             Console.WriteLine("In which year do you want to be ?");
@@ -488,6 +540,12 @@ namespace OOP_Project
             classe = r.Next(1, 3);
         }
 
+        /// <summary>
+        /// The method uses a random to create a student number. The student number
+        /// is made of the 2 first characters of the last name and the name of the
+        /// student and of a random number between 10000 and 99999. The student
+        /// number is aded to the student file and finally the file is closed.
+        /// </summary>
         public void StudentID()
         {
             StreamReader reader = new StreamReader(pathStudent);
@@ -509,6 +567,13 @@ namespace OOP_Project
             reader.Close();
         }
 
+        /// <summary>
+        /// The method displays the amount of unpaid fees and asks the user if
+        /// he wants to pay now or not. If the answer is no, the method ends.
+        /// Otherwise, the method asks the amount the user wants to pay right
+        /// now and checks if the entered amount is correct (between 0 and the
+        /// amount unpaid).
+        /// </summary>
         public void PayFees()
         {
             Console.WriteLine($"Your scolarity fees are: {UnpaidFees}.\n Do you want to pay them now ?. If you want to pay now, enter Y otherwise enter N");
@@ -540,11 +605,17 @@ namespace OOP_Project
             }
         }
 
+        /// <summary>
+        /// It puts all the data of the student in to a variable in string.
+        /// </summary>
         public void ToStringDataStudent()
         {
             studentData = ($"{name};{lastname};{mail};{studentID};{birthDate};{absences};{phone};{tutor};{level};{classe};{UnpaidFees};{courseStorage.Length / 2}{courseStorage}");
         }
 
+        /// <summary>
+        /// It puts in string the data of accessibility (login and password).
+        /// </summary>
         public void ToStringDataAccessibilityLevel()
         {
             accessibilityData = mail + ";" + password + ";" + "student";
