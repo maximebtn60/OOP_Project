@@ -957,17 +957,19 @@ namespace OOP_Project
                     }
                     else if (tabExam.Length == 1)
                     {
-                        //grades = Convert.ToString(tabExam[0].Sub);
-                        grades = grades + tabExam[0].ToString() + ";";
-                        for (int j = 0; j < Class[i].Courses.Count; j++)
+                        grades = grades + tabExam[0].ToString();
+                        if (Class[i].Grades.Count > 1)
                         {
-                            if (Class[i].Courses[j] != (Subject)tabExam[0].Sub)
+                            for (int j = 0; j < Class[i].Courses.Count; j++)
                             {
-                                if (j != Class[i].Courses.Count - 1)
+                                if (Class[i].Courses[j] != (Subject)tabExam[0].Sub)
                                 {
-                                    grades = grades + Class[i].Courses[j].GetHashCode() + ";";
+                                    if (j != Class[i].Courses.Count - 1)
+                                    {
+                                        grades = grades + Class[i].Courses[j].GetHashCode() + ";";
+                                    }
+                                    else grades = grades + Class[i].Courses[j].GetHashCode();
                                 }
-                                else grades = grades + Class[i].Courses[j].GetHashCode();
                             }
                         }
                     }
