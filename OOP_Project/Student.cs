@@ -317,6 +317,11 @@ namespace OOP_Project
 
         }
 
+        /// <summary>
+        /// The method displays a menu in order to let the user chooses what he
+        /// wants to do. The method uses the instruction 'switch' to distinguish
+        /// all the cases associated to each possible choice.
+        /// </summary>
         public void ExeFunctions()
         {
             string carryOn = "N";
@@ -395,11 +400,19 @@ namespace OOP_Project
 
 
         }
+
+        /// <summary>
+        /// It displays th exam.
+        /// </summary>
         public void DisplayExam()
         {
             Calendar.ReadExamAssignment(Class, Level);
         }
 
+        /// <summary>
+        /// It displays all the personal informations about one person: first name,
+        /// last name, birth date, phone number and mail adress.
+        /// </summary>
         public void DisplayPersonalInfos()
         {
             Console.WriteLine($"First Name: {name}\n " +
@@ -409,12 +422,21 @@ namespace OOP_Project
                 $"email address: {mail}\n");
         }
 
+        /// <summary>
+        /// It displays the amount of unpaid fees.
+        /// </summary>
         public void DisplayFees()
         { Console.WriteLine($"The student still have to pay {UnpaidFees} €"); }
 
+        /// <summary>
+        /// It displays the number of absences of the student.
+        /// </summary>
         public void DisplayAbsence()
         { Console.WriteLine($"The student did not attend {Absences} classes"); }
 
+        /// <summary>
+        /// It displays all the grades of one student.
+        /// </summary>
         public void DisplayGrades()
         {
             Console.WriteLine($"Grades of {name} {lastname}");
@@ -460,6 +482,10 @@ namespace OOP_Project
                 Console.WriteLine();
             }
         }
+
+        /// <summary>
+        /// It displays all the courses taken of one student.
+        /// </summary>
         public void DisplayCourses()
         {
             Console.Write("The student have the following classes : ");
