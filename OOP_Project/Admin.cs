@@ -13,6 +13,9 @@ namespace OOP_Project
         public string birthDate { get; set; }//not implemented in admin class
         public string Data { get; set; }
 
+        /// <summary>
+        /// verifies if the login informations are right
+        /// </summary>
         public Admin()
         {
             Console.WriteLine("Login ?");
@@ -48,6 +51,9 @@ namespace OOP_Project
             readAdmin.Close();
         }
 
+        /// <summary>
+        /// extracting data
+        /// </summary>
         public override void ExtractData()
         {
             StreamReader reader = new StreamReader(pathFacilityMember);
@@ -69,6 +75,9 @@ namespace OOP_Project
 
         }
 
+        /// <summary>
+        /// return  true if the identificaton is positive, return false if the identification is negative
+        /// </summary>
         public override bool Login()//return  true if the identificaton is positive, return false if the identification is negative
         {
             bool access = false;
@@ -692,6 +701,10 @@ namespace OOP_Project
             }
             stream.Dispose();
         }
+
+        /// <summary>
+        /// To add a new admin into the system
+        /// </summary>
         public void AddAdmin()
         {
             Console.WriteLine("Name ?");
@@ -712,6 +725,9 @@ namespace OOP_Project
             Registration.WriteData(pathAccessibilityLevel, sumAccessData);//add the admin in the accessibility file
         }
 
+        /// <summary>
+        /// add someone and all the informations about him
+        /// </summary>
         public void AddFacilityMember()
         {
             Console.WriteLine("First Name ?");
@@ -826,6 +842,9 @@ namespace OOP_Project
             Registration student = new Registration(admin);
         }
 
+        /// <summary>
+        /// delete admin, student or facility Member
+        /// </summary>
         public void Delete(string login2)//delete admin, student or facility Member
         {
             string accessLevel = null;
@@ -949,6 +968,10 @@ namespace OOP_Project
 
         }
 
+
+        /// <summary>
+        /// Show the amount of fees you have to pay
+        /// </summary>
         public void PayFees()
         {
             Console.WriteLine("PAY FEES");
